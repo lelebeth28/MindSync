@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Register | MindSync</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script>
+        // Firebase configuration - REPLACE WITH YOUR ACTUAL CONFIG
+        // FOR PRODUCTION, CONSIDER HIDING API KEYS (e.g., environment variables if server-side)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBU84r_RKYDoUinlBntyFYJAPWvvQD0xZQ", // YOUR API KEY
+            authDomain: "appblocker-cee93.firebaseapp.com",
+            databaseURL: "https://appblocker-cee93-default-rtdb.firebaseio.com",
+            projectId: "appblocker-cee93",
+            storageBucket: "appblocker-cee93.appspot.com",
+            messagingSenderId: "388944003396",
+            appId: "1:388944003396:web:4e8cac1df4f6d68f5e5711",
+            measurementId: "G-TGSK8PV5FF"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        // Get Firebase Auth instance
+        const auth = firebase.auth();
+    </script>
+    <style>
+        /* CSS Variables for consistent theming (copied from login.html) */
+        :root {
+            --primary: #4F46E5; /* Indigo */
+            --primary-dark: #4338CA; /* Darker indigo */
+            --primary-light: #C7D2FE; /* Light indigo */
+            --secondary: #10B981; /* Emerald (kept for success/accent, if needed) */
+            --dark: #1F2937; /* Dark gray */
+            --light: #F9FAFB; /* Light gray */
+            --gray: #6B7280; /* Medium gray */
+            --light-gray: #E5E7EB; /* Border gray */
+            --white: #FFFFFF;
+            
+            /* Effects */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --rounded-sm: 0.25rem;
+            --rounded: 0.5rem;
+            --rounded-md: 0.75rem;
+            --rounded-lg: 1rem;
+            --rounded-full: 9999px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+            /* Error color for validation messages */
+            --danger: #ef4444; /* A vibrant red for errors */
+        }
+        
+        /* Base styles (copied from login.html) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        
+        /* Main container (adapted from login-container) */
+        .auth-container {
+            display: flex;
+            width: 100%;
+            max-width: 1000px;
+            min-height: 600px;
+            background-color: var(--white);
+            border-radius: var(--rounded-lg);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+        
+        /* Left side - Branding (copied from login.html brand-section) */
+        .brand-section {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 3rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .brand-section::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            border-radius: var(--rounded-full);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .brand-section::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -80px;
+            width: 300px;
+            height: 300px;
+            border-radius: var(--rounded-full);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1.5rem;
+            background-color: var(--white);
+            border-radius: var(--rounded);
+            padding: 0.5rem;
+            box-shadow: var(--shadow-md);
+            z-index: 1;
+            object-fit: contain; /* Ensure logo fits within the padded area */
+        }
+        
+        .brand-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            z-index: 1;
+        }
+        
+        .brand-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            max-width: 300px;
+            z-index: 1;
+        }
+        
+        /* Right side - Form (copied from login.html form-section) */
+        .form-section {
+            flex: 1;
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .form-header {
+            margin-bottom: 2rem;
+            text-align: center; /* Center align header for register page */
+        }
+        
+        .form-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .form-subtitle {
+            font-size: 0.9375rem;
+            color: var(--gray);
+        }
+        
+        /* Form elements (adapted from login.html form-group, form-label, form-input) */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .form-input, select { /* Added select to inherit form-input styles */
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 0.9375rem;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--rounded);
+            background-color: var(--light);
+            transition: var(--transition);
+        }
+        
+        .form-input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            background-color: var(--white);
+        }
+        
+        .input-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            cursor: pointer;
+            z-index: 2; /* Ensure icon is above input */
+        }
+
+        /* Checkbox styling (reusing .remember-me for consistency) */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            /* margin: 1rem 0 1.5rem; removed default margin to allow custom margin for individual usages*/
+            font-size: 0.875rem;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .remember-me input[type="checkbox"] {
+            width: 1rem;
+            height: 1rem;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+        
+        .remember-me label {
+            color: var(--gray);
+            cursor: pointer;
+            margin-bottom: 0; /* Override default form-label margin */
+        }
+        
+        /* Submit button (copied from login.html) */
+        .submit-btn {
+            width: 100%;
+            padding: 0.875rem;
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--rounded);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem; /* Added margin for spacing */
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(1px);
+        }
+
+        .submit-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        /* Register/Login link (adapted from login.html) */
+        .login-link { /* Kept this class name for consistency with login.html structure */
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--gray);
+            margin-top: 1.5rem;
+        }
+        
+        .login-link a {
+            color: var(--primary);
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Password Requirements (adapted to new theme) */
+        .password-requirements {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: var(--light); /* Light background for requirements */
+            border-radius: var(--rounded);
+            border-left: 4px solid var(--primary); /* Accent border */
+            box-shadow: var(--shadow-sm);
+        }
+        .password-requirements p {
+            font-size: 0.875rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .requirement-list {
+            list-style: none;
+            padding: 0;
+        }
+        .requirement-list li {
+            padding: 0.2rem 0;
+            font-size: 0.8rem;
+            color: var(--gray); /* Default text color for requirements */
+            position: relative;
+            padding-left: 1.25rem;
+        }
+        .requirement-list li::before {
+            content: "✗";
+            position: absolute;
+            left: 0;
+            color: var(--danger); /* Red for unmet requirements */
+            font-weight: bold;
+        }
+        .requirement-list li.valid {
+            color: var(--dark); /* Keep text color for valid requirements */
+        }
+        .requirement-list li.valid::before {
+            content: "✓";
+            color: var(--secondary); /* Green for valid requirements */
+        }
+
+        /* Error Message Styling */
+        .error-message {
+            color: var(--danger);
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            margin-left: 0.125rem;
+            display: none; /* Hidden by default */
+        }
+
+        /* Verification Modal (adapted to new theme) */
+        .verification-modal {
+            display: none; /* Hidden by default, shown with JS */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .verification-content {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: var(--rounded-lg);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: var(--shadow-lg);
+        }
+        .verification-content i {
+            font-size: 3.5rem;
+            color: var(--secondary); /* Emerald for success icon */
+            margin-bottom: 1.5rem;
+        }
+        .verification-content h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        .verification-content p {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+        .verification-content button {
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--rounded);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        .verification-content button:hover {
+            background: var(--primary-dark);
+        }
+        .verification-content a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        .verification-content a:hover {
+            text-decoration: underline;
+            color: var(--primary-dark);
+        }
+
+        /* Responsive adjustments (copied from login.html) */
+        @media (max-width: 768px) {
+            .auth-container {
+                flex-direction: column;
+                max-width: 450px;
+                min-height: auto;
+            }
+            
+            .brand-section {
+                padding: 2rem 1.5rem;
+                border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
+            }
+            
+            .form-section {
+                padding: 2rem 1.5rem;
+                border-radius: 0 0 var(--rounded-lg) var(--rounded-lg);
+            }
+            
+            .brand-title {
+                font-size: 1.5rem;
+            }
+            
+            .form-title {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .auth-container {
+                border-radius: var(--rounded-md);
+            }
+            
+            .brand-section,
+            .form-section {
+                padding: 1.5rem 1.25rem;
+            }
+            
+            .logo {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="brand-section">
+            <img src="MS.png" class="logo" alt="MindSync Logo">
+            <h1 class="brand-title">Welcome to MindSync</h1>
+            <p class="brand-subtitle">Your platform for enhanced focus and productivity</p>
+        </div>
+        
+        <div class="form-section">
+            <div class="form-header">
+                <h2 class="form-title">Create Your Account</h2>
+                <p class="form-subtitle">Enter your details to get started</p>
+            </div>
+            
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input type="text" id="lastName" class="form-input" placeholder="Enter your last name" required>
+                    <div class="error-message" id="lastNameError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input type="text" id="firstName" class="form-input" placeholder="Enter your first name" required>
+                    <div class="error-message" id="firstNameError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="middleName" class="form-label">Middle Name</label>
+                    <input type="text" id="middleName" class="form-input" placeholder="Enter your middle name">
+                    <div class="error-message" id="middleNameError"></div>
+                    <div class="form-options" style="margin-top: 0.5rem; margin-bottom: 0;">
+                        <div class="remember-me"> 
+                            <input type="checkbox" id="noMiddleNameCheckbox">
+                            <label for="noMiddleNameCheckbox">No Middle Name</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="suffix" class="form-label">Suffix (Optional)</label>
+                    <input type="text" id="suffix" class="form-input" placeholder="e.g. Jr., Sr., III">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" class="form-input" placeholder="you@example.com" required>
+                    <div class="error-message" id="emailError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+                        <i class="fas fa-eye input-icon" id="togglePasswordIcon"></i>
+                    </div>
+                    <div class="error-message" id="passwordError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="confirmPassword" class="form-input" placeholder="••••••••" required>
+                        <i class="fas fa-eye input-icon" id="toggleConfirmPasswordIcon"></i>
+                    </div>
+                    <div class="error-message" id="confirmPasswordError"></div>
+                </div>
+                <div class="password-requirements">
+                    <p>Password must meet the following requirements:</p>
+                    <ul class="requirement-list" id="requirementList">
+                        <li id="length">Minimum 9 characters</li>
+                        <li id="uppercase">At least one uppercase letter</li>
+                        <li id="lowercase">At least one lowercase letter</li>
+                        <li id="number">At least one number</li>
+                        <li id="special">At least one special character</li>
+                    </ul>
+                </div>
+                <button type="submit" class="submit-btn" id="registerBtn">Create Account</button>
+            </form>
+            
+            <div class="login-link">
+                Already have an account? <a href="login.html">Sign in</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="verification-modal" id="verificationModal">
+        <div class="verification-content">
+            <i class="fas fa-envelope"></i>
+            <h2>Verify Your Email</h2>
+            <p>A verification email has been sent to your email address. Please check your inbox and click the verification link to complete your registration.</p>
+            <p>Didn't receive the email? <a href="#" id="resendLink">Resend verification email</a></p>
+            <button id="closeModal">OK</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const lastNameInput = document.getElementById('lastName');
+            const firstNameInput = document.getElementById('firstName');
+            const middleNameInput = document.getElementById('middleName');
+            const noMiddleNameCheckbox = document.getElementById('noMiddleNameCheckbox');
+            const suffixInput = document.getElementById('suffix');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            const registerBtn = document.getElementById('registerBtn');
+            const registrationForm = document.getElementById('registrationForm');
+            const verificationModal = document.getElementById('verificationModal');
+            const closeModal = document.getElementById('closeModal');
+            const resendLink = document.getElementById('resendLink');
+            
+            // Password toggle functionality
+            setupPasswordToggle('password', 'togglePasswordIcon');
+            setupPasswordToggle('confirmPassword', 'toggleConfirmPasswordIcon');
+            
+            // Middle Name checkbox logic
+            noMiddleNameCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    middleNameInput.value = ''; // Clear middle name if checkbox is checked
+                    middleNameInput.disabled = true;
+                    // Hide middle name specific error if checkbox is checked
+                    document.getElementById('middleNameError').style.display = 'none'; 
+                } else {
+                    middleNameInput.disabled = false;
+                }
+                validateForm(); // Re-validate the form state
+            });
+
+            // Real-time validation listeners
+            lastNameInput.addEventListener('input', validateForm);
+            firstNameInput.addEventListener('input', validateForm);
+            middleNameInput.addEventListener('input', validateForm);
+            emailInput.addEventListener('input', validateEmail);
+            passwordInput.addEventListener('input', validatePassword);
+            confirmPasswordInput.addEventListener('input', validateConfirmPassword);
+            
+            // Form submission
+            registrationForm.addEventListener('submit', handleRegistration);
+            
+            // Modal controls
+            closeModal.addEventListener('click', () => verificationModal.style.display = 'none');
+            resendLink.addEventListener('click', handleResendVerification);
+            
+            // Initialize form validation on load
+            validateForm(); 
+            // Also explicitly validate password and email to set initial states of messages
+            validatePassword.call(passwordInput); // Use .call to pass the input as 'this'
+            validateEmail.call(emailInput);
+        });
+
+        function setupPasswordToggle(passwordId, iconId) {
+            const passwordInput = document.getElementById(passwordId);
+            const toggleIcon = document.getElementById(iconId);
+            
+            if (passwordInput && toggleIcon) {
+                toggleIcon.addEventListener('click', function() {
+                    const type = passwordInput.type === 'password' ? 'text' : 'password';
+                    passwordInput.type = type;
+                    toggleIcon.classList.toggle('fa-eye');
+                    toggleIcon.classList.toggle('fa-eye-slash');
+                });
+            }
+        }
+
+        function validatePassword() {
+            const password = this.value;
+            const requirements = {
+                length: password.length >= 9,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /[0-9]/.test(password),
+                special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+            };
+
+            for (const [key, met] of Object.entries(requirements)) {
+                const element = document.getElementById(key);
+                if (element) {
+                    if (met) {
+                        element.classList.add('valid');
+                        element.classList.remove('invalid'); // Ensure 'invalid' is removed
+                    } else {
+                        element.classList.add('invalid'); // Add 'invalid' class (optional, for specific styling)
+                        element.classList.remove('valid');
+                    }
+                }
+            }
+
+            const allMet = Object.values(requirements).every(Boolean);
+            const errorElement = document.getElementById('passwordError');
+            
+            if (password && !allMet) {
+                errorElement.textContent = 'Password does not meet all requirements.';
+                errorElement.style.display = 'block';
+            } else if (!password && document.activeElement === this) { // Only show error if user is typing and field is empty
+                errorElement.textContent = 'Password is required.';
+                errorElement.style.display = 'block';
+            }
+            else {
+                errorElement.style.display = 'none';
+            }
+
+            validateForm();
+            validateConfirmPassword(); // Ensure confirm password is re-validated when password changes
+        }
+
+        function validateConfirmPassword() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value; // 'this' refers to confirmPasswordInput
+            const errorElement = document.getElementById('confirmPasswordError');
+            
+            if (confirmPassword && password !== confirmPassword) {
+                errorElement.textContent = 'Passwords do not match.';
+                errorElement.style.display = 'block';
+            } else if (!confirmPassword && document.activeElement === this) { // Only show error if user is typing and field is empty
+                errorElement.textContent = 'Confirm password is required.';
+                errorElement.style.display = 'block';
+            }
+            else {
+                errorElement.style.display = 'none';
+            }
+
+            validateForm();
+        }
+
+        function validateEmail() {
+            const email = this.value.trim();
+            const errorElement = document.getElementById('emailError');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (!email) {
+                errorElement.textContent = 'Email address is required.';
+                errorElement.style.display = 'block';
+            } else if (!emailRegex.test(email)) {
+                errorElement.textContent = 'Please enter a valid email address.';
+                errorElement.style.display = 'block';
+            } else {
+                errorElement.style.display = 'none';
+            }
+
+            validateForm();
+        }
+
+        function validateForm() {
+            const lastName = document.getElementById('lastName').value.trim();
+            const firstName = document.getElementById('firstName').value.trim();
+            const middleNameInput = document.getElementById('middleName'); // Get the element
+            const middleName = middleNameInput.value.trim();
+            const noMiddleNameCheckbox = document.getElementById('noMiddleNameCheckbox');
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const registerBtn = document.getElementById('registerBtn');
+            
+            // Name validation
+            const lastNameValid = lastName !== '';
+            const firstNameValid = firstName !== '';
+            
+            // Middle name validation depends on checkbox
+            let middleNameValid = true; // Assume valid initially
+            if (!noMiddleNameCheckbox.checked) {
+                middleNameValid = middleName !== '';
+            }
+
+            // Display name errors
+            document.getElementById('lastNameError').textContent = lastNameValid ? '' : 'Last Name is required.';
+            document.getElementById('lastNameError').style.display = lastNameValid ? 'none' : 'block';
+
+            document.getElementById('firstNameError').textContent = firstNameValid ? '' : 'First Name is required.';
+            document.getElementById('firstNameError').style.display = firstNameValid ? 'none' : 'block';
+            
+            if (!noMiddleNameCheckbox.checked) {
+                document.getElementById('middleNameError').textContent = middleNameValid ? '' : 'Middle Name is required unless "No Middle Name" is checked.';
+                document.getElementById('middleNameError').style.display = middleNameValid ? 'none' : 'block';
+            } else {
+                document.getElementById('middleNameError').style.display = 'none'; // Ensure error is hidden if checkbox is checked
+            }
+
+            // Password requirements check (using the same logic as validatePassword)
+            const passwordRequirements = {
+                length: password.length >= 9,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /[0-9]/.test(password),
+                special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+            };
+            const passwordValid = Object.values(passwordRequirements).every(Boolean);
+            
+            // Email validation (using the same logic as validateEmail)
+            const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email !== ''; // Check for non-empty too
+
+            // Confirm password match
+            const confirmPasswordMatch = password === confirmPassword && confirmPassword !== '';
+            
+            // Enable/disable register button
+            registerBtn.disabled = !(
+                lastNameValid &&
+                firstNameValid &&
+                middleNameValid && // Crucial for middle name
+                emailValid && 
+                passwordValid && 
+                confirmPasswordMatch
+            );
+        }
+
+        function handleRegistration(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const lastName = document.getElementById('lastName').value.trim();
+            const firstName = document.getElementById('firstName').value.trim();
+            const middleName = document.getElementById('middleName').value.trim();
+            const noMiddleNameCheckbox = document.getElementById('noMiddleNameCheckbox');
+            const suffix = document.getElementById('suffix').value.trim();
+            const registerBtn = document.getElementById('registerBtn');
+            const emailError = document.getElementById('emailError');
+            const passwordError = document.getElementById('passwordError');
+
+            // Double-check validation before proceeding (important for security)
+            validateForm();
+            if (registerBtn.disabled) {
+                // If button is disabled, there are validation errors,
+                // user might have bypassed them.
+                alert('Please correct the errors in the form.');
+                return;
+            }
+            
+            registerBtn.disabled = true;
+            registerBtn.textContent = 'Creating Account...';
+            
+            // Construct the display name: Last Name, First Name Middle Name Suffix
+            let displayName = `${lastName}, ${firstName}`;
+            if (middleName && !noMiddleNameCheckbox.checked) {
+                displayName += ` ${middleName}`;
+            }
+            if (suffix) {
+                displayName += ` ${suffix}`;
+            }
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // User created, now update profile with display name
+                    return userCredential.user.updateProfile({
+                        displayName: displayName
+                    }).then(() => userCredential.user); // Pass the user object for the next .then()
+                })
+                .then((user) => {
+                    // Send email verification
+                    return user.sendEmailVerification();
+                })
+                .then(() => {
+                    // Show verification modal after email sent
+                    document.getElementById('verificationModal').style.display = 'flex';
+                    // Clear the form and reset validation state
+                    registrationForm.reset();
+                    // Manually trigger validation for password field to update requirements display
+                    validatePassword.call(passwordInput); 
+                    validateForm(); 
+                })
+                .catch((error) => {
+                    let errorMessage = "Registration failed: " + error.message;
+                    emailError.style.display = 'none'; // Hide previous errors
+                    passwordError.style.display = 'none';
+
+                    if (error.code === 'auth/email-already-in-use') {
+                        errorMessage = "This email is already registered. Please use a different email or sign in.";
+                        emailError.textContent = errorMessage;
+                        emailError.style.display = 'block';
+                    } else if (error.code === 'auth/weak-password') {
+                        errorMessage = "Password is too weak. Please choose a stronger password.";
+                        passwordError.textContent = errorMessage;
+                        passwordError.style.display = 'block';
+                    } else if (error.code === 'auth/invalid-email') {
+                        errorMessage = "Please enter a valid email address.";
+                        emailError.textContent = errorMessage;
+                        emailError.style.display = 'block';
+                    } else {
+                        // For generic errors, you might want to show an alert or a general error message at the top of the form
+                        alert(errorMessage); 
+                    }
+                })
+                .finally(() => {
+                    registerBtn.disabled = false;
+                    registerBtn.textContent = 'Create Account';
+                });
+        }
+
+        // --- START OF RESEND EMAIL VERIFICATION FUNCTION ---
+        function handleResendVerification(e) {
+            e.preventDefault();
+            const user = auth.currentUser; // Gets the currently logged-in user
+
+            if (user) {
+                // Optional: Implement a cooldown for resending email
+                const resendLinkElement = document.getElementById('resendLink');
+                resendLinkElement.style.pointerEvents = 'none'; // Disable link
+                let countdown = 60; // seconds
+                resendLinkElement.textContent = `Resend in ${countdown}s`;
+
+                const timer = setInterval(() => {
+                    countdown--;
+                    if (countdown > 0) {
+                        resendLinkElement.textContent = `Resend in ${countdown}s`;
+                    } else {
+                        clearInterval(timer);
+                        resendLinkElement.textContent = 'Resend verification email';
+                        resendLinkElement.style.pointerEvents = 'auto'; // Re-enable link
+                    }
+                }, 1000);
+
+                user.sendEmailVerification()
+                    .then(() => {
+                        alert('Verification email has been resent successfully! Please check your inbox.');
+                    })
+                    .catch((error) => {
+                        alert('Error resending verification email: ' + error.message);
+                        clearInterval(timer); // Clear timer if error occurs
+                        resendLinkElement.textContent = 'Resend verification email';
+                        resendLinkElement.style.pointerEvents = 'auto';
+                    });
+            } else {
+                alert('No user currently logged in. Please register first.');
+                // Optionally redirect to login/register page
+                window.location.href = 'login.html'; 
+            }
+        }
+    </script>
+</body>
+</html>

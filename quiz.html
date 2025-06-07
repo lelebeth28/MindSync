@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Quiz Generator | MindSync</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --primary-dark: #3a0ca3;
+            --secondary: #3f37c9;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --success: #4bb543;
+            --warning: #ffc107;
+            --danger: #f72585;
+            --card-bg: #FFFFFF;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7ff;
+            color: var(--dark);
+            padding-bottom: 80px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto 100px;
+            padding: 30px;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 2px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--gray);
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        /* Form Styles */
+        .form-label {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            transition: var(--transition);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+        }
+
+        /* Quiz Generation Card */
+        .generation-card {
+            background-color: #fff;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.05);
+            border: 1px solid rgba(67, 97, 238, 0.1);
+        }
+
+        .generation-card h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .generation-card h3 i {
+            color: var(--accent);
+        }
+
+        /* Quiz Content Styles */
+        #quiz-content {
+            display: none;
+            margin-top: 30px;
+            border: 1px solid rgba(67, 97, 238, 0.1);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            background-color: #fff;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.05);
+        }
+
+        .quiz-question {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--primary);
+        }
+
+        .quiz-question h5 {
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+        }
+
+        /* Results Styles */
+        #quiz-results {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .result-card {
+            background-color: #fff;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: var(--box-shadow);
+            border-top: 4px solid var(--primary);
+        }
+
+        .progress {
+            height: 12px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            border-radius: 6px;
+        }
+
+        /* Button Styles */
+        .btn {
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            border-color: var(--success);
+        }
+
+        .btn-success:hover {
+            background-color: #3a9a33;
+            border-color: #3a9a33;
+            transform: translateY(-2px);
+        }
+
+        .btn-accent {
+            background-color: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .btn-accent:hover {
+            background-color: #3ab4d8;
+            border-color: #3ab4d8;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--gray);
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        .nav-item i {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .nav-item span {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .nav-item:hover {
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(67, 97, 238, 0.1);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Confetti Effect */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary);
+            opacity: 0;
+            z-index: 9999;
+            animation: confetti 5s ease-in-out;
+        }
+
+        @keyframes confetti {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Question Type Toggle */
+        .quiz-type-toggle {
+            display: flex;
+            background-color: #f1f3ff;
+            border-radius: 8px;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-type-btn {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .quiz-type-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        /* Multiple Choice Options */
+        .option-container {
+            margin-top: 15px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .option-item input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        /* Answer Feedback */
+        .answer-feedback {
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .correct-answer {
+            background-color: rgba(75, 181, 67, 0.1);
+            color: var(--success);
+        }
+
+        .incorrect-answer {
+            background-color: rgba(247, 37, 133, 0.1);
+            color: var(--danger);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px auto 80px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <h1>AI Quiz Generator</h1>
+        <p class="subtitle">Paste your notes and let AI create a personalized quiz for you</p>
+
+        <div class="generation-card">
+            <h3><i class="bi bi-magic"></i> Generate Quiz from Notes</h3>
+            <div class="mb-4">
+                <label for="notes-input" class="form-label">Paste your study notes below</label>
+                <textarea id="notes-input" class="form-control" rows="6" placeholder="Paste your notes here..."></textarea>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Quiz Type</label>
+                <div class="quiz-type-toggle">
+                    <div class="quiz-type-btn active" data-type="multiple-choice">Multiple Choice</div>
+                    <div class="quiz-type-btn" data-type="identification">Identification</div>
+                    <div class="quiz-type-btn" data-type="mixed">Mixed</div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label for="question-count" class="form-label">Number of Questions</label>
+                <select id="question-count" class="form-select">
+                    <option value="5">5 Questions</option>
+                    <option value="10" selected>10 Questions</option>
+                    <option value="15">15 Questions</option>
+                    <option value="20">20 Questions</option>
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button id="generate-quiz-btn" class="btn btn-accent">
+                    <i class="bi bi-lightning-charge"></i> Generate Quiz
+                </button>
+            </div>
+
+            <div id="generation-status" class="mt-3 text-muted" style="display: none;">
+                <div class="spinner"></div>
+                <p class="text-center mt-2">Generating your quiz questions...</p>
+            </div>
+        </div>
+
+        <div id="quiz-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 id="active-quiz-title">Generated Quiz</h3>
+                <span class="badge bg-primary" id="active-quiz-timer">00:00:00</span>
+            </div>
+            <div id="quiz-questions"></div>
+            <button id="submit-quiz-btn" class="btn btn-primary mt-4 w-100 py-3">
+                <i class="bi bi-check-circle"></i> Submit Answers
+            </button>
+        </div>
+
+        <div id="quiz-results" class="result-card">
+            <div class="text-center mb-4">
+                <h3>Quiz Results</h3>
+                <div class="progress mt-3">
+                    <div id="quiz-progress" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                </div>
+                <h4 id="quiz-score" class="mt-3">Score: 0%</h4>
+                <p id="quiz-time" class="text-muted">Time: 00:00:00</p>
+            </div>
+            <div id="quiz-detail-results"></div>
+            <div class="d-flex gap-3 mt-4">
+                <button id="new-quiz-btn" class="btn btn-primary flex-grow-1">
+                    <i class="bi bi-plus-circle"></i> New Quiz
+                </button>
+                <button id="retry-quiz-btn" class="btn btn-secondary flex-grow-1">
+                    <i class="bi bi-arrow-repeat"></i> Try Again
+                </button>
+                <button id="save-quiz-btn" class="btn btn-success flex-grow-1">
+                    <i class="bi bi-save"></i> Save Quiz
+                </button>
+            </div>
+        </div>
+
+        <div id="saved-quizzes-section" class="mt-5" style="display: none;">
+            <h2><i class="bi bi-journal-check"></i> Saved Quizzes</h2>
+            <div id="saved-quizzes-list" class="row row-cols-1 row-cols-md-2 g-4 mt-3"></div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <i class="bi bi-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="quiz.html" class="nav-item active">
+            <i class="bi bi-question-circle"></i>
+            <span>Quiz</span>
+        </a>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM Elements
+            const notesInput = document.getElementById('notes-input');
+            const generateQuizBtn = document.getElementById('generate-quiz-btn');
+            const generationStatus = document.getElementById('generation-status');
+            const quizTypeBtns = document.querySelectorAll('.quiz-type-btn');
+            const questionCount = document.getElementById('question-count');
+            const quizContent = document.getElementById('quiz-content');
+            const quizQuestions = document.getElementById('quiz-questions');
+            const submitQuizBtn = document.getElementById('submit-quiz-btn');
+            const quizResults = document.getElementById('quiz-results');
+            const quizProgress = document.getElementById('quiz-progress');
+            const quizScore = document.getElementById('quiz-score');
+            const quizTime = document.getElementById('quiz-time');
+            const newQuizBtn = document.getElementById('new-quiz-btn');
+            const retryQuizBtn = document.getElementById('retry-quiz-btn');
+            const saveQuizBtn = document.getElementById('save-quiz-btn');
+            const quizDetailResults = document.getElementById('quiz-detail-results');
+            const activeQuizTitle = document.getElementById('active-quiz-title');
+            const activeQuizTimer = document.getElementById('active-quiz-timer');
+            const savedQuizzesSection = document.getElementById('saved-quizzes-section');
+            const savedQuizzesList = document.getElementById('saved-quizzes-list');
+
+            let currentQuizType = 'multiple-choice';
+            let timerInterval = null;
+            let timerSeconds = 0;
+            let generatedQuiz = null;
+            let quizAttemptResults = null; // Store the results of the current quiz attempt
+
+            // Event Listeners
+            generateQuizBtn.addEventListener('click', generateQuizFromNotes);
+            quizTypeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    quizTypeBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentQuizType = btn.dataset.type;
+                });
+            });
+            submitQuizBtn.addEventListener('click', submitQuiz);
+            newQuizBtn.addEventListener('click', resetQuiz);
+            retryQuizBtn.addEventListener('click', retryQuiz);
+            saveQuizBtn.addEventListener('click', saveQuiz);
+
+            // Initialize saved quizzes display
+            loadAndDisplaySavedQuizzes();
+
+            /**
+             * Generates a quiz from the pasted notes using AI simulation
+             */
+            function generateQuizFromNotes() {
+                const notes = notesInput.value.trim();
+                if (!notes) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'No Notes Provided',
+                        text: 'Please paste your study notes to generate a quiz.',
+                        confirmButtonColor: 'var(--primary)'
+                    });
+                    return;
+                }
+
+                // Show loading state
+                generationStatus.style.display = 'block';
+                generateQuizBtn.disabled = true;
+                const spinner = generationStatus.querySelector('.spinner');
+                spinner.style.display = 'block';
+
+                // Simulate AI processing (in a real app, this would call an API)
+                setTimeout(() => {
+                    try {
+                        const count = parseInt(questionCount.value);
+                        generatedQuiz = simulateAIQuizGeneration(notes, count, currentQuizType);
+                        
+                        // Display the generated quiz
+                        displayGeneratedQuiz(generatedQuiz);
+                        
+                        // Hide loading state
+                        generationStatus.style.display = 'none';
+                        generateQuizBtn.disabled = false;
+                        
+                        // Scroll to quiz
+                        quizContent.scrollIntoView({ behavior: 'smooth' });
+                    } catch (error) {
+                        console.error("Quiz generation error:", error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Generation Failed',
+                            text: 'There was an error generating your quiz. Please try again.',
+                            confirmButtonColor: 'var(--primary)'
+                        });
+                        generationStatus.style.display = 'none';
+                        generateQuizBtn.disabled = false;
+                    }
+                }, 2000);
+            }
+
+            /**
+             * Simulates AI quiz generation (for demo purposes).
+             * This function is enhanced to produce both MC and Identification questions.
+             */
+            function simulateAIQuizGeneration(notes, questionCount, quizType) {
+                // Split notes into sentences. Filter out very short ones.
+                const sentences = notes.split(/[.!?]+/).filter(s => s.trim().length > 10);
+
+                const questions = [];
+                const availableSentences = [...sentences];
+                const availableKeyTerms = [];
+
+                // Key term extraction for identification
+                sentences.forEach(sentence => {
+                    const words = sentence.trim().split(/\s+/);
+                    if (words.length > 2 && words.length <= 6) {
+                        const potentialTerm = words.slice(0, Math.min(3, words.length)).join(' ').replace(/[,;:]$/, '').trim();
+                        if (potentialTerm.length > 5 && !potentialTerm.includes(' ')) {
+                            availableKeyTerms.push(potentialTerm);
+                        } else if (potentialTerm.length > 8) {
+                            availableKeyTerms.push(potentialTerm);
+                        }
+                    }
+                    words.forEach((word, idx) => {
+                        if (idx > 0 && word[0] === word[0].toUpperCase() && word.length > 3 && !['The', 'A', 'An', 'And', 'Or'].includes(word)) {
+                            availableKeyTerms.push(word.replace(/[,.!?]$/, ''));
+                        }
+                    });
+                });
+
+                const uniqueKeyTerms = [...new Set(availableKeyTerms.filter(term => term.length > 3))];
+
+                let mcqTarget = 0;
+                let idTarget = 0;
+
+                if (quizType === 'identification') {
+                    idTarget = questionCount;
+                } else if (quizType === 'multiple-choice') {
+                    mcqTarget = questionCount;
+                } else { // mixed
+                    mcqTarget = Math.ceil(questionCount / 2);
+                    idTarget = questionCount - mcqTarget;
+                }
+
+                // Generate multiple choice questions
+                const mcqQuestions = [];
+                const mcqSentences = [...availableSentences];
+                for (let i = 0; i < mcqTarget && mcqSentences.length > 0; i++) {
+                    const randomIndex = Math.floor(Math.random() * mcqSentences.length);
+                    const sentence = mcqSentences.splice(randomIndex, 1)[0].trim();
+
+                    const words = sentence.split(/\s+/).filter(w => w.length > 3);
+                    if (words.length < 4) {
+                        i--;
+                        continue;
+                    }
+
+                    const answer = words[Math.floor(Math.random() * words.length)].replace(/[,.!?]$/, '');
+
+                    const options = new Set([answer]);
+                    while (options.size < 4) {
+                        const randomWord = words[Math.floor(Math.random() * words.length)].replace(/[,.!?]$/, '');
+                        if (randomWord.toLowerCase() !== answer.toLowerCase() && randomWord.length > 2) {
+                            options.add(randomWord);
+                        }
+                    }
+
+                    const shuffledOptions = Array.from(options).sort(() => Math.random() - 0.5);
+
+                    mcqQuestions.push({
+                        type: 'multiple-choice',
+                        question: `Which term best fits the context of: "${sentence.replace(answer, '____')}"`,
+                        answer: answer,
+                        options: shuffledOptions
+                    });
+                }
+
+                // Generate identification questions
+                const idQuestions = [];
+                const idCandidates = [];
+
+                // Extract candidate phrases (not just single words)
+                sentences.forEach(sentence => {
+                    // Try to blank out a random word or phrase (preferably a noun or long word)
+                    const words = sentence.trim().split(/\s+/);
+                    // Find a word/phrase to blank out (longest word, or random if not found)
+                    let answer = '';
+                    if (words.length > 3) {
+                        // Prefer a word that's not a stopword and is at least 4 chars
+                        const candidates = words.filter(w => w.length > 3 && !['this','that','with','from','have','which','their','will','would','there','about','these','other','some','such','more','than','when','what','your','them','they','been','were','has','had','for','the','and','but','are','was','you','his','her','she','him','our','out','who','its','not','can','all','one','also','may','any','use','how','why','where','into','each','most','many','much','over','very','just','like','even','only','both','those','after','before','being','because','while','during','between','under','again','against','further','then','once'].includes(w.toLowerCase()));
+                        answer = candidates.length > 0 ? candidates[Math.floor(Math.random() * candidates.length)] : words[Math.floor(Math.random() * words.length)];
+                    } else {
+                        answer = words[Math.floor(Math.random() * words.length)];
+                    }
+                    // Avoid blanking out punctuation
+                    answer = answer.replace(/[.,!?;:]+$/, '');
+                    if (answer.length > 2 && sentence.toLowerCase().includes(answer.toLowerCase())) {
+                        idCandidates.push({
+                            question: sentence.replace(new RegExp(answer, 'gi'), '____'),
+                            answer: answer
+                        });
+                    }
+                });
+
+                // Shuffle and pick up to idTarget
+                const shuffledIdCandidates = idCandidates.sort(() => Math.random() - 0.5);
+                for (let i = 0; i < idTarget && i < shuffledIdCandidates.length; i++) {
+                    idQuestions.push({
+                        type: 'identification',
+                        question: `Identify the missing word or phrase: "${shuffledIdCandidates[i].question}"`,
+                        answer: shuffledIdCandidates[i].answer
+                    });
+                }
+
+                // Combine and fill up to questionCount
+                let combinedQuestions = [];
+                if (quizType === 'multiple-choice') {
+                    combinedQuestions = mcqQuestions;
+                } else if (quizType === 'identification') {
+                    combinedQuestions = idQuestions;
+                    // If not enough, fill with MCQs
+                    let fill = mcqQuestions.slice(0, questionCount - combinedQuestions.length);
+                    combinedQuestions = combinedQuestions.concat(fill);
+                } else { // mixed
+                    combinedQuestions = mcqQuestions.concat(idQuestions);
+                    // If not enough, repeat from both types
+                    let idx = 0;
+                    while (combinedQuestions.length < questionCount && (mcqQuestions.length > 0 || idQuestions.length > 0)) {
+                        if (mcqQuestions.length > 0) {
+                            combinedQuestions.push(mcqQuestions[idx % mcqQuestions.length]);
+                        }
+                        if (combinedQuestions.length < questionCount && idQuestions.length > 0) {
+                            combinedQuestions.push(idQuestions[idx % idQuestions.length]);
+                        }
+                        idx++;
+                    }
+                }
+
+                // If still not enough, repeat existing questions (last resort)
+                while (combinedQuestions.length < questionCount && combinedQuestions.length > 0) {
+                    combinedQuestions.push(combinedQuestions[combinedQuestions.length % combinedQuestions.length]);
+                }
+
+                // Shuffle for randomness
+                if (combinedQuestions.length > 1) {
+                    combinedQuestions = combinedQuestions.sort(() => Math.random() - 0.5);
+                }
+
+                return {
+                    title: "Generated from Notes",
+                    questions: combinedQuestions.slice(0, questionCount),
+                    createdAt: new Date().toISOString()
+                };
+            }
+
+            /**
+             * Displays the generated quiz in the UI
+             */
+            function displayGeneratedQuiz(quiz) {
+                activeQuizTitle.textContent = quiz.title;
+                quizQuestions.innerHTML = '';
+                
+                // Create question elements
+                quiz.questions.forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question';
+                    
+                    if (q.type === 'multiple-choice') {
+                        questionDiv.innerHTML = `
+                            <h5>${index + 1}. ${q.question}</h5>
+                            <div class="option-container">
+                                ${q.options.map((opt, i) => `
+                                    <div class="option-item">
+                                        <input type="radio" id="q${index}-opt${i}" name="q${index}" value="${opt}">
+                                        <label for="q${index}-opt${i}">${opt}</label>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="answer-feedback" id="feedback-${index}" style="display: none;"></div>
+                        `;
+                    } else if (q.type === 'identification') {
+                        // Identification question
+                        questionDiv.innerHTML = `
+                            <h5>${index + 1}. ${q.question}</h5>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control answer-input" id="answer-${index}" 
+                                        placeholder="Enter your answer" data-correct="${q.answer}">
+                                <label for="answer-${index}">Your answer</label>
+                            </div>
+                            <div class="answer-feedback" id="feedback-${index}" style="display: none;"></div>
+                        `;
+                    }
+                    
+                    quizQuestions.appendChild(questionDiv);
+                });
+                
+                // Show quiz content
+                quizContent.style.display = 'block';
+                quizResults.style.display = 'none'; // Hide results if visible
+                
+                // Start timer
+                timerSeconds = 0;
+                clearInterval(timerInterval);
+                timerInterval = setInterval(updateTimer, 1000);
+                updateTimer();
+            }
+
+            /**
+             * Updates the quiz timer display
+             */
+            function updateTimer() {
+                timerSeconds++;
+                const hours = Math.floor(timerSeconds / 3600);
+                const minutes = Math.floor((timerSeconds % 3600) / 60);
+                const seconds = timerSeconds % 60;
+                activeQuizTimer.textContent = 
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            /**
+             * Submits the quiz for grading
+             */
+            function submitQuiz() {
+                if (!generatedQuiz) return;
+                
+                clearInterval(timerInterval);
+                
+                // Grade the quiz
+                let correctCount = 0;
+                const results = [];
+                
+                generatedQuiz.questions.forEach((q, index) => {
+                    let userAnswer, isCorrect;
+                    
+                    if (q.type === 'multiple-choice') {
+                        const selectedOption = document.querySelector(`input[name="q${index}"]:checked`);
+                        userAnswer = selectedOption ? selectedOption.value : null;
+                        isCorrect = userAnswer === q.answer;
+                    } else if (q.type === 'identification') {
+                        // Identification question
+                        const input = document.getElementById(`answer-${index}`);
+                        userAnswer = input ? input.value.trim() : null;
+                        // Case-sensitive comparison for identification
+                        isCorrect = userAnswer === q.answer;
+                    }
+                    
+                    if (isCorrect) correctCount++;
+                    
+                    // Show feedback
+                    const feedbackDiv = document.getElementById(`feedback-${index}`);
+                    if (feedbackDiv) {
+                        feedbackDiv.style.display = 'block';
+                        feedbackDiv.className = `answer-feedback ${isCorrect ? 'correct-answer' : 'incorrect-answer'}`;
+                        feedbackDiv.innerHTML = `
+                            ${isCorrect ? 
+                                '<i class="bi bi-check-circle-fill"></i> Correct!' : 
+                                `<i class="bi bi-x-circle-fill"></i> Incorrect. The correct answer is: <strong>${q.answer}</strong>`}
+                        `;
+                        // Disable input/radio buttons after submission
+                        if (q.type === 'multiple-choice') {
+                            document.querySelectorAll(`input[name="q${index}"]`).forEach(radio => radio.disabled = true);
+                        } else if (q.type === 'identification') {
+                            document.getElementById(`answer-${index}`).disabled = true;
+                        }
+                    }
+                    
+                    results.push({
+                        question: q.question,
+                        userAnswer: userAnswer || 'No answer provided',
+                        correctAnswer: q.answer,
+                        isCorrect,
+                        type: q.type
+                    });
+                });
+                
+                const score = Math.round((correctCount / generatedQuiz.questions.length) * 100);
+                const timeSpent = timerSeconds;
+
+                quizAttemptResults = {
+                    quizId: generatedQuiz.createdAt, // Using timestamp as a unique ID for the generated quiz
+                    quizTitle: generatedQuiz.title,
+                    score: score,
+                    timeSpent: timeSpent,
+                    results: results,
+                    attemptedAt: new Date().toISOString(),
+                    quizQuestions: generatedQuiz.questions // Store the original questions for retry
+                };
+                
+                showResults(score, timeSpent, results);
+                
+                // Show confetti for perfect score
+                if (score === 100) {
+                    showConfetti();
+                }
+            }
+
+            /**
+             * Shows the quiz results
+             */
+            function showResults(score, timeSpent, results) {
+                quizContent.style.display = 'none';
+                quizResults.style.display = 'block';
+                
+                // Update score display
+                quizProgress.style.width = `${score}%`;
+                quizScore.textContent = `Score: ${score}%`;
+                quizProgress.classList.remove('bg-danger', 'bg-warning', 'bg-success');
+                if (score < 50) {
+                    quizProgress.classList.add('bg-danger');
+                } else if (score < 75) {
+                    quizProgress.classList.add('bg-warning');
+                } else {
+                    quizProgress.classList.add('bg-success');
+                }
+
+
+                // Format time
+                const hours = Math.floor(timeSpent / 3600);
+                const minutes = Math.floor((timeSpent % 3600) / 60);
+                const seconds = timeSpent % 60;
+                quizTime.textContent = `Time: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Show detailed results
+                quizDetailResults.innerHTML = '';
+                results.forEach((result, index) => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = `quiz-question ${result.isCorrect ? 'correct-answer' : 'incorrect-answer'}`;
+                    resultItem.innerHTML = `
+                        <h5>${index + 1}. ${result.question}</h5>
+                        <p>Your Answer: <strong>${result.userAnswer}</strong></p>
+                        <p>Correct Answer: <strong>${result.correctAnswer}</strong></p>
+                        <p class="mt-2 ${result.isCorrect ? 'text-success' : 'text-danger'}">
+                            <i class="bi ${result.isCorrect ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}"></i> 
+                            ${result.isCorrect ? 'Correct!' : 'Incorrect.'}
+                        </p>
+                    `;
+                    quizDetailResults.appendChild(resultItem);
+                });
+            }
+
+            /**
+             * Resets the quiz to the generation form
+             */
+            function resetQuiz() {
+                quizContent.style.display = 'none';
+                quizResults.style.display = 'none';
+                notesInput.value = '';
+                generatedQuiz = null;
+                quizAttemptResults = null;
+                clearInterval(timerInterval);
+                activeQuizTimer.textContent = '00:00:00';
+            }
+
+            /**
+             * Retries the current quiz
+             */
+            function retryQuiz() {
+                if (generatedQuiz) {
+                    displayGeneratedQuiz(generatedQuiz); // Redisplay the same quiz
+                } else {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'No Quiz to Retry',
+                        text: 'Generate a quiz first before retrying.',
+                        confirmButtonColor: 'var(--primary)'
+                    });
+                }
+            }
+
+            /**
+             * Saves the current quiz attempt results to local storage
+             */
+            function saveQuiz() {
+                if (!quizAttemptResults) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'No Quiz to Save',
+                        text: 'Complete a quiz first to save your results.',
+                        confirmButtonColor: 'var(--primary)'
+                    });
+                    return;
+                }
+
+                let savedQuizzes = JSON.parse(localStorage.getItem('savedQuizzes')) || [];
+                // Add a unique ID for each saved attempt, using timestamp of attempt
+                savedQuizzes.push(quizAttemptResults);
+                localStorage.setItem('savedQuizzes', JSON.stringify(savedQuizzes));
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Quiz Saved!',
+                    text: 'Your quiz results have been successfully saved.',
+                    confirmButtonColor: 'var(--primary)'
+                });
+
+                loadAndDisplaySavedQuizzes(); // Refresh the saved quizzes list
+            }
+
+            /**
+             * Loads and displays saved quizzes from local storage
+             */
+            function loadAndDisplaySavedQuizzes() {
+                const savedQuizzes = JSON.parse(localStorage.getItem('savedQuizzes')) || [];
+                savedQuizzesList.innerHTML = ''; // Clear previous list
+
+                if (savedQuizzes.length > 0) {
+                    savedQuizzesSection.style.display = 'block';
+                    savedQuizzes.forEach((quiz, index) => {
+                        const quizCard = document.createElement('div');
+                        quizCard.className = 'col';
+                        const scoreColor = quiz.score < 50 ? 'danger' : (quiz.score < 75 ? 'warning' : 'success');
+                        quizCard.innerHTML = `
+                            <div class="card h-100 shadow-sm border-${scoreColor}">
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary">${quiz.quizTitle || 'Untitled Quiz'}</h5>
+                                    <p class="card-text">
+                                        <strong>Score:</strong> <span class="text-${scoreColor}">${quiz.score}%</span><br>
+                                        <strong>Questions:</strong> ${quiz.results.length}<br>
+                                        <strong>Time:</strong> ${formatTime(quiz.timeSpent)}<br>
+                                        <strong>Attempted:</strong> ${new Date(quiz.attemptedAt).toLocaleString()}
+                                    </p>
+                                    <button class="btn btn-sm btn-primary view-details-btn" data-index="${index}">
+                                        View Details
+                                    </button>
+                                    <button class="btn btn-sm btn-danger delete-quiz-btn" data-index="${index}">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        savedQuizzesList.appendChild(quizCard);
+                    });
+
+                    // Add event listeners for view details and delete buttons
+                    document.querySelectorAll('.view-details-btn').forEach(button => {
+                        button.addEventListener('click', (event) => {
+                            const index = event.target.dataset.index;
+                            showSavedQuizDetails(savedQuizzes[index]);
+                        });
+                    });
+
+                    document.querySelectorAll('.delete-quiz-btn').forEach(button => {
+                        button.addEventListener('click', (event) => {
+                            const index = event.target.dataset.index;
+                            deleteSavedQuiz(index);
+                        });
+                    });
+
+                } else {
+                    savedQuizzesSection.style.display = 'none';
+                    savedQuizzesList.innerHTML = '<p class="text-center text-muted">No saved quizzes yet.</p>';
+                }
+            }
+
+            /**
+             * Formats seconds into HH:MM:SS
+             */
+            function formatTime(totalSeconds) {
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            /**
+             * Displays details of a saved quiz
+             */
+            function showSavedQuizDetails(quiz) {
+                let detailHtml = `
+                    <h3>${quiz.quizTitle || 'Quiz'} Details</h3>
+                    <p><strong>Score:</strong> <span class="${quiz.score < 50 ? 'text-danger' : (quiz.score < 75 ? 'text-warning' : 'text-success')}">${quiz.score}%</span></p>
+                    <p><strong>Time Spent:</strong> ${formatTime(quiz.timeSpent)}</p>
+                    <hr>
+                `;
+
+                quiz.results.forEach((result, index) => {
+                    detailHtml += `
+                        <div class="mb-3 p-3 border rounded ${result.isCorrect ? 'border-success' : 'border-danger'}">
+                            <h5>${index + 1}. ${result.question}</h5>
+                            <p>Your Answer: <strong>${result.userAnswer}</strong></p>
+                            <p>Correct Answer: <strong>${result.correctAnswer}</strong></p>
+                            <p class="${result.isCorrect ? 'text-success' : 'text-danger'}">
+                                <i class="bi ${result.isCorrect ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}"></i> 
+                                ${result.isCorrect ? 'Correct!' : 'Incorrect.'}
+                            </p>
+                        </div>
+                    `;
+                });
+
+                Swal.fire({
+                    title: 'Saved Quiz Details',
+                    html: detailHtml,
+                    width: '600px',
+                    showCloseButton: true,
+                    confirmButtonText: 'Close',
+                    confirmButtonColor: 'var(--primary)'
+                });
+            }
+
+            /**
+             * Deletes a saved quiz from local storage
+             */
+            function deleteSavedQuiz(index) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: 'var(--danger)',
+                    cancelButtonColor: 'var(--gray)',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let savedQuizzes = JSON.parse(localStorage.getItem('savedQuizzes')) || [];
+                        savedQuizzes.splice(index, 1); // Remove the item at the given index
+                        localStorage.setItem('savedQuizzes', JSON.stringify(savedQuizzes));
+                        loadAndDisplaySavedQuizzes(); // Refresh the list
+                        Swal.fire(
+                            'Deleted!',
+                            'Your quiz has been deleted.',
+                            'success'
+                        );
+                    }
+                });
+            }
+
+            /**
+             * Shows a confetti animation for perfect scores.
+             */
+            function showConfetti() {
+                const colors = ['var(--primary)', 'var(--accent)', 'var(--success)', 'var(--danger)', 'var(--warning)'];
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.classList.add('confetti');
+                    confetti.style.left = `${Math.random() * 100}vw`;
+                    confetti.style.top = `${-20 - Math.random() * 100}px`; // Start above screen
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+                    confetti.style.animationDuration = `${3 + Math.random() * 2}s`; // 3 to 5 seconds
+                    document.body.appendChild(confetti);
+
+                    // Remove confetti after animation
+                    confetti.addEventListener('animationend', () => {
+                        confetti.remove();
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>

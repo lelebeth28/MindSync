@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Settings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="theme.css">
+    <style>
+        /* theme.css */
+        :root {
+            --bg-light: #f0f2f5;
+            --container-bg-light: #FFFFFF;
+            --text-dark: #212121;
+            --text-medium: #4a5568;
+            --text-light: #616161;
+            --border-light: #e0e0e0;
+            --primary-orange: #FF6B00;
+            --primary-orange-dark: #E65100;
+            --primary-orange-light: #FF9500;
+            --status-enabled: #4CAF50;
+            --status-disabled: #F44336;
+            --status-dark-mode: #fb923c;
+            --status-light-mode: #3A86FF;
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --transition-normal: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            --bg-light: #1a202c;
+            --container-bg-light: #2d3748;
+            --text-dark: #e2e8f0;
+            --text-medium: #cbd5e0;
+            --text-light: #a0aec0;
+            --border-light: #4a5568;
+            --primary-orange: #FF9500;
+            --primary-orange-dark: #FF6B00;
+            --primary-orange-light: #FFA726;
+            --status-enabled: #69F0AE;
+            --status-disabled: #FF5252;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-light); /* Page background */
+            margin: 0;
+            padding: 20px; /* Add padding for mobile view */
+            color: var(--text-dark); /* Default text color */
+            transition: background-color var(--transition-normal), color var(--transition-normal);
+        }
+
+        .settings-container {
+            background-color: var(--container-bg-light); /* Container background */
+            padding: 2.5rem; /* Increased padding */
+            border-radius: 1rem; /* More rounded corners */
+            box-shadow: var(--shadow-lg); /* Stronger shadow */
+            text-align: center;
+            max-width: 500px; /* Max width like the modal */
+            width: 100%; /* Full width on smaller screens */
+            transition: background-color var(--transition-normal), color var(--transition-normal), box-shadow var(--transition-normal);
+            position: relative; /* Needed for positioning back button */
+        }
+        
+        .settings-header {
+            color: var(--primary-orange); /* Orange for heading */
+            margin-bottom: 1.5rem;
+            font-size: 2rem; /* text-3xl */
+            font-weight: 700; /* font-bold */
+            display: flex; /* To align title and potential back button */
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            left: 0; /* Position to the far left */
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem; /* Larger icon */
+            color: var(--text-medium); /* Matches other text, or primary-orange */
+            text-decoration: none;
+            transition: color var(--transition-normal);
+            padding-right: 1rem; /* Space between arrow and title */
+        }
+
+        .back-button:hover {
+            color: var(--primary-orange); /* Primary orange on hover */
+        }
+
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-light); /* Border adapts to theme */
+        }
+        .setting-item:last-child {
+            border-bottom: none; /* No border for the last item */
+        }
+        .setting-label {
+            font-weight: 500;
+            color: var(--text-medium); /* Label text color */
+            font-size: 1.125rem; /* text-lg */
+        }
+        /* Custom styling for the toggle switch */
+        .setting-toggle {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .setting-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--primary-orange); /* Orange when checked */
+        }
+        input:focus + .slider {
+            box-shadow: 0 0 1px var(--primary-orange);
+        }
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+        .save-button {
+            background-color: var(--primary-orange); /* Orange-500 */
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+        .save-button:hover {
+            background-color: var(--primary-orange-dark); /* Darker orange on hover */
+            transform: translateY(-1px);
+        }
+        .save-button:active {
+            transform: translateY(0);
+        }
+
+        /* App Settings Status Section styles */
+        .app-status-section {
+            background-color: var(--bg-light); /* Adapts to dark mode */
+            border-radius: 0.75rem; /* rounded-lg */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* shadow-sm */
+            padding: 1.5rem; /* space-md */
+            margin-top: 2rem; /* space-lg */
+            border: 1px solid var(--border-light); /* Adapts to dark mode */
+            text-align: left; /* Align text left within this section */
+            transition: background-color var(--transition-normal), border-color var(--transition-normal);
+        }
+        .app-status-section h2 {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 600; /* font-semibold */
+            margin-bottom: 1rem; /* space-md */
+            color: var(--text-dark); /* Adapts to dark mode */
+        }
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0; /* py-3 */
+            border-bottom: 1px dashed var(--border-light); /* Adapts to dark mode */
+        }
+        .status-item:last-child {
+            border-bottom: none;
+        }
+        .status-label {
+            font-weight: 500;
+            color: var(--text-light); /* Adapts to dark mode */
+        }
+        .status-value {
+            font-weight: 600;
+        }
+        .status-value.enabled {
+            color: var(--status-enabled);
+        }
+        .status-value.disabled {
+            color: var(--status-disabled);
+        }
+        .status-value.dark {
+            color: var(--status-dark-mode);
+        }
+        .status-value.light {
+            color: var(--status-light-mode);
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-container">
+        <h1 class="settings-header">
+            <a href="index.html" class="back-button" title="Back to Homepage">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            Application Settings
+        </h1>
+
+        <div class="setting-item">
+            <span class="setting-label">Block Facebook Notifications</span>
+            <label class="setting-toggle">
+                <input type="checkbox" id="blockNotificationsToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-item">
+            <span class="setting-label">Enable Dark Mode</span>
+            <label class="setting-toggle">
+                <input type="checkbox" id="enableDarkModeToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-item">
+            <span class="setting-label">Show Confirmation Dialogs</span>
+            <label class="setting-toggle">
+                <input type="checkbox" id="showConfirmDialogsToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <button class="save-button">Save Settings</button>
+
+        <div class="app-status-section">
+            <h2>Current App Status</h2>
+            <div class="status-item">
+                <span class="status-label">Facebook Notification Blocking:</span>
+                <span id="fbBlockStatus" class="status-value"></span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Dark Mode:</span>
+                <span id="darkModeStatus" class="status-value"></span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Confirmation Dialogs:</span>
+                <span id="confirmDialogsStatus" class="status-value"></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const blockNotificationsToggle = document.getElementById('blockNotificationsToggle');
+            const enableDarkModeToggle = document.getElementById('enableDarkModeToggle');
+            const showConfirmDialogsToggle = document.getElementById('showConfirmDialogsToggle');
+            const saveButton = document.querySelector('.save-button');
+            const body = document.body;
+
+            const fbBlockStatusElement = document.getElementById('fbBlockStatus');
+            const darkModeStatusElement = document.getElementById('darkModeStatus');
+            const confirmDialogsStatusElement = document.getElementById('confirmDialogsStatus');
+
+            // --- Dark Mode Logic ---
+            function applyTheme(theme) {
+                if (theme === 'dark') {
+                    body.classList.add('dark-mode');
+                } else {
+                    body.classList.remove('dark-mode');
+                }
+                updateSettingsStatusUI(); // Update status display after theme change
+            }
+
+            // --- Settings Status UI Update ---
+            function updateSettingsStatusUI() {
+                const isFbBlockingEnabled = localStorage.getItem('blockNotifications') === 'true';
+                fbBlockStatusElement.textContent = isFbBlockingEnabled ? 'Enabled' : 'Disabled';
+                fbBlockStatusElement.className = 'status-value ' + (isFbBlockingEnabled ? 'enabled' : 'disabled');
+
+                const currentTheme = localStorage.getItem('theme') || 'light';
+                darkModeStatusElement.textContent = currentTheme === 'dark' ? 'Enabled' : 'Disabled';
+                darkModeStatusElement.className = 'status-value ' + (currentTheme === 'dark' ? 'dark' : 'light');
+
+                const areConfirmDialogsEnabled = localStorage.getItem('showConfirmDialogs') === 'true';
+                confirmDialogsStatusElement.textContent = areConfirmDialogsEnabled ? 'Enabled' : 'Disabled';
+                confirmDialogsStatusElement.className = 'status-value ' + (areConfirmDialogsEnabled ? 'enabled' : 'disabled');
+            }
+
+            // Function to load settings from localStorage and update UI
+            function loadSettings() {
+                const blockNotifs = localStorage.getItem('blockNotifications') === 'true';
+                const enableDarkMode = localStorage.getItem('theme') === 'dark';
+                const showConfirm = localStorage.getItem('showConfirmDialogs') === 'true';
+
+                blockNotificationsToggle.checked = blockNotifs;
+                enableDarkModeToggle.checked = enableDarkMode;
+                showConfirmDialogsToggle.checked = showConfirm;
+
+                applyTheme(enableDarkMode ? 'dark' : 'light');
+                // updateSettingsStatusUI is called by applyTheme
+            }
+
+            // Function to save settings to localStorage
+            function saveSettings() {
+                localStorage.setItem('blockNotifications', blockNotificationsToggle.checked);
+                localStorage.setItem('theme', enableDarkModeToggle.checked ? 'dark' : 'light');
+                localStorage.setItem('showConfirmDialogs', showConfirmDialogsToggle.checked);
+
+                applyTheme(enableDarkModeToggle.checked ? 'dark' : 'light');
+                alert('Settings saved successfully!'); // Placeholder for custom UI
+            }
+
+            // Add event listener to the save button
+            saveButton.addEventListener('click', saveSettings);
+
+            // Listen for changes in localStorage from other tabs/windows (for consistency)
+            window.addEventListener('storage', (event) => {
+                if (event.key === 'blockNotifications') {
+                    blockNotificationsToggle.checked = (event.newValue === 'true');
+                    updateSettingsStatusUI();
+                } else if (event.key === 'theme') {
+                    enableDarkModeToggle.checked = (event.newValue === 'true');
+                    applyTheme(event.newValue);
+                } else if (event.key === 'showConfirmDialogs') {
+                    showConfirmDialogsToggle.checked = (event.newValue === 'true');
+                    updateSettingsStatusUI();
+                }
+            });
+
+            // Initial load of settings when the page loads
+            loadSettings();
+        })();
+
+        // Add this to index.html, quiz.html, progress.html, etc.
+        (function() {
+            // Read theme from localStorage and apply the class before page renders
+            const theme = localStorage.getItem('theme') || 'light';
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        })();
+
+        // Block Facebook notifications if enabled in settings
+        (function blockFacebookNotifications() {
+            // Helper to actually block notifications
+            function blockFB() {
+                // Block Facebook's Notification API if on facebook.com or iframes
+                if (window.location.hostname.includes('facebook.com')) {
+                    if ('Notification' in window) {
+                        // Override Notification.requestPermission
+                        Notification.requestPermission = function () {
+                            return Promise.resolve('denied');
+                        };
+                        // Override Notification constructor
+                        window.Notification = function () {
+                            throw new Error("Facebook notifications are blocked by the app settings.");
+                        };
+                    }
+                }
+                // Additionally, block any Facebook notification iframes/popups in your app
+                // (for example, if you embed Facebook widgets)
+                // You can also hide Facebook notification DOM elements if present
+                const fbNotifSelectors = [
+                    '[aria-label="Notifications"]', // Facebook's notification bell
+                    '.jewelContent', // Facebook notification dropdown
+                    '#fbNotificationsJewel' // Old Facebook notification icon
+                ];
+                fbNotifSelectors.forEach(sel => {
+                    document.querySelectorAll(sel).forEach(el => el.style.display = 'none');
+                });
+            }
+
+            // Check the setting and block if enabled
+            function checkAndBlock() {
+                if (localStorage.getItem('blockNotifications') === 'true') {
+                    blockFB();
+                }
+            }
+
+            // Run on page load
+            checkAndBlock();
+
+            // Listen for changes to the setting (from settings page or other tabs)
+            window.addEventListener('storage', (event) => {
+                if (event.key === 'blockNotifications') {
+                    checkAndBlock();
+                }
+            });
+
+            // Optionally, re-block after navigation or dynamic content changes
+            // (e.g., after AJAX loads or SPA navigation)
+            document.addEventListener('DOMContentLoaded', checkAndBlock);
+            document.addEventListener('readystatechange', checkAndBlock);
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>My Account - MindSync</title>
+    <link rel="stylesheet" href="account.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+    <div class="header">
+        <button class="back-button" onclick="window.history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="logo-container">
+            <img src="MS.png" alt="MindSync Logo" class="logo-img">
+            <div class="logo-text">MindSync </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="profile-container">
+            <div class="profile-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="info-container">
+                <div class="user-info">
+                    <h2 id="fullName">Loading...</h2>
+                    <div class="info-item">
+                        <span class="info-label">Email:</span>
+                        <span class="info-value" id="userEmail">email@example.com</span>
+                    </div>
+                    <div class="join-date">
+                        Member since: <span id="joinDate">January 1, 2023</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="account.js"></script>
+</body>
+</html>

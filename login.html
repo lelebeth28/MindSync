@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login | MindSync</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script>
+        // Firebase configuration - REPLACE WITH YOUR ACTUAL CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyBU84r_RKYDoUinlBntyFYJAPWvvQD0xZQ", // YOUR API KEY
+            authDomain: "appblocker-cee93.firebaseapp.com",
+            databaseURL: "https://appblocker-cee93-default-rtdb.firebaseio.com",
+            projectId: "appblocker-cee93",
+            storageBucket: "appblocker-cee93.appspot.com",
+            messagingSenderId: "388944003396",
+            appId: "1:388944003396:web:4e8cac1df4f6d68f5e5711",
+            measurementId: "G-TGSK8PV5FF"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        // Get Firebase Auth instance
+        const auth = firebase.auth();
+    </script>
+    <style>
+        /* CSS Variables for consistent theming */
+        :root {
+            --primary: #4F46E5; /* Indigo */
+            --primary-dark: #4338CA; /* Darker indigo */
+            --primary-light: #C7D2FE; /* Light indigo */
+            --secondary: #10B981; /* Emerald (kept for success/accent, if needed) */
+            --dark: #1F2937; /* Dark gray */
+            --light: #F9FAFB; /* Light gray */
+            --gray: #6B7280; /* Medium gray */
+            --light-gray: #E5E7EB; /* Border gray */
+            --white: #FFFFFF;
+            
+            /* Effects */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --rounded-sm: 0.25rem;
+            --rounded: 0.5rem;
+            --rounded-md: 0.75rem;
+            --rounded-lg: 1rem;
+            --rounded-full: 9999px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+            /* Error color for validation messages */
+            --danger: #ef4444; /* A vibrant red for errors */
+        }
+        
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        
+        .auth-container {
+            display: flex;
+            width: 100%;
+            max-width: 1000px;
+            min-height: 550px; /* Slightly adjusted for login */
+            background-color: var(--white);
+            border-radius: var(--rounded-lg);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+        
+        .brand-section {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 3rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .brand-section::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            border-radius: var(--rounded-full);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .brand-section::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -80px;
+            width: 300px;
+            height: 300px;
+            border-radius: var(--rounded-full);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1.5rem;
+            background-color: var(--white);
+            border-radius: var(--rounded);
+            padding: 0.5rem;
+            box-shadow: var(--shadow-md);
+            z-index: 1;
+            object-fit: contain;
+        }
+        
+        .brand-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            z-index: 1;
+        }
+        
+        .brand-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            max-width: 300px;
+            z-index: 1;
+        }
+        
+        .form-section {
+            flex: 1;
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .form-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .form-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .form-subtitle {
+            font-size: 0.9375rem;
+            color: var(--gray);
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 0.9375rem;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--rounded);
+            background-color: var(--light);
+            transition: var(--transition);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            background-color: var(--white);
+        }
+        
+        .input-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1rem 0 1.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .remember-me input[type="checkbox"] {
+            width: 1rem;
+            height: 1rem;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+        
+        .remember-me label {
+            color: var(--gray);
+            cursor: pointer;
+            margin-bottom: 0;
+        }
+        
+        .forgot-password {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer; /* Added cursor to indicate it's clickable */
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 0.875rem;
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--rounded);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(1px);
+        }
+
+        .submit-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .register-link {
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--gray);
+            margin-top: 1.5rem;
+        }
+        
+        .register-link a {
+            color: var(--primary);
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            margin-left: 0.125rem;
+            display: none; /* Hidden by default */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .auth-container {
+                flex-direction: column;
+                max-width: 450px;
+                min-height: auto;
+            }
+            
+            .brand-section {
+                padding: 2rem 1.5rem;
+                border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
+            }
+            
+            .form-section {
+                padding: 2rem 1.5rem;
+                border-radius: 0 0 var(--rounded-lg) var(--rounded-lg);
+            }
+            
+            .brand-title {
+                font-size: 1.5rem;
+            }
+            
+            .form-title {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .auth-container {
+                border-radius: var(--rounded-md);
+            }
+            
+            .brand-section,
+            .form-section {
+                padding: 1.5rem 1.25rem;
+            }
+            
+            .logo {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="brand-section">
+            <img src="MS.png" class="logo" alt="MindSync Logo">
+            <h1 class="brand-title">Welcome Back!</h1>
+            <p class="brand-subtitle">Sign in to continue your journey towards enhanced focus and productivity.</p>
+        </div>
+        
+        <div class="form-section">
+            <div class="form-header">
+                <h2 class="form-title">Login to Your Account</h2>
+                <p class="form-subtitle">Enter your email and password to access your account</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail" class="form-label">Email Address</label>
+                    <input type="email" id="loginEmail" class="form-input" placeholder="you@example.com" required>
+                    <div class="error-message" id="loginEmailError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword" class="form-label">Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
+                        <i class="fas fa-eye input-icon" id="toggleLoginPasswordIcon"></i>
+                    </div>
+                    <div class="error-message" id="loginPasswordError"></div>
+                </div>
+                
+                <div class="form-options">
+                    <div class="remember-me">
+                        <input type="checkbox" id="rememberMe">
+                        <label for="rememberMe">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-password" id="forgotPasswordLink">Forgot password?</a>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="loginBtn">Login</button>
+            </form>
+            
+            <div class="register-link">
+                Don't have an account? <a href="register.html">Sign up</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const loginEmailInput = document.getElementById('loginEmail');
+            const loginPasswordInput = document.getElementById('loginPassword');
+            const loginBtn = document.getElementById('loginBtn');
+            const toggleLoginPasswordIcon = document.getElementById('toggleLoginPasswordIcon');
+            const loginEmailError = document.getElementById('loginEmailError');
+            const loginPasswordError = document.getElementById('loginPasswordError');
+            const forgotPasswordLink = document.getElementById('forgotPasswordLink'); // Get the forgot password link
+
+            // Password toggle functionality for login page
+            if (toggleLoginPasswordIcon) {
+                toggleLoginPasswordIcon.addEventListener('click', function() {
+                    const type = loginPasswordInput.type === 'password' ? 'text' : 'password';
+                    loginPasswordInput.type = type;
+                    toggleLoginPasswordIcon.classList.toggle('fa-eye');
+                    toggleLoginPasswordIcon.classList.toggle('fa-eye-slash');
+                });
+            }
+
+            // Real-time validation for login fields
+            loginEmailInput.addEventListener('input', validateLoginForm);
+            loginPasswordInput.addEventListener('input', validateLoginForm);
+
+            loginForm.addEventListener('submit', handleLogin);
+
+            // Add event listener for the forgot password link
+            if (forgotPasswordLink) {
+                forgotPasswordLink.addEventListener('click', handleForgotPassword);
+            }
+
+            // Initial form validation state
+            validateLoginForm();
+        });
+
+        function validateLoginForm() {
+            const loginEmail = document.getElementById('loginEmail').value.trim();
+            const loginPassword = document.getElementById('loginPassword').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const emailError = document.getElementById('loginEmailError');
+            const passwordError = document.getElementById('loginPasswordError');
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            let emailValid = emailRegex.test(loginEmail) && loginEmail !== '';
+            let passwordValid = loginPassword !== '';
+
+            // Display email error
+            if (!loginEmail) {
+                emailError.textContent = 'Email is required.';
+                emailError.style.display = 'block';
+            } else if (!emailValid) {
+                emailError.textContent = 'Please enter a valid email address.';
+                emailError.style.display = 'block';
+            } else {
+                emailError.style.display = 'none';
+            }
+
+            // Display password error
+            if (!loginPassword) {
+                passwordError.textContent = 'Password is required.';
+                passwordError.style.display = 'block';
+            } else {
+                passwordError.style.display = 'none';
+            }
+
+            // Enable/disable login button
+            loginBtn.disabled = !(emailValid && passwordValid);
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+
+            const loginEmail = document.getElementById('loginEmail').value.trim();
+            const loginPassword = document.getElementById('loginPassword').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const loginEmailError = document.getElementById('loginEmailError');
+            const loginPasswordError = document.getElementById('loginPasswordError');
+
+            // Reset previous errors
+            loginEmailError.style.display = 'none';
+            loginPasswordError.style.display = 'none';
+            
+            // Double-check validation before proceeding
+            validateLoginForm();
+            if (loginBtn.disabled) {
+                alert('Please fill in both email and password fields correctly.');
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Logging In...';
+
+            auth.signInWithEmailAndPassword(loginEmail, loginPassword)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    console.log("Logged in successfully:", user);
+                    // Redirect to index.html upon successful login
+                    window.location.href = 'index.html'; 
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.error("Login failed:", errorCode, errorMessage);
+
+                    let displayErrorMessage = "Login failed. Please try again.";
+
+                    if (errorCode === 'auth/invalid-login-credentials') {
+                        displayErrorMessage = "Invalid email or password.";
+                        loginEmailError.textContent = displayErrorMessage; 
+                        loginEmailError.style.display = 'block';
+                    } else if (errorCode === 'auth/user-disabled') {
+                        displayErrorMessage = "Your account has been disabled. Please contact support.";
+                        loginEmailError.textContent = displayErrorMessage;
+                        loginEmailError.style.display = 'block';
+                    } else if (errorCode === 'auth/invalid-email') {
+                         displayErrorMessage = "Please enter a valid email address.";
+                         loginEmailError.textContent = displayErrorMessage;
+                         loginEmailError.style.display = 'block';
+                    }
+                    else {
+                        alert(displayErrorMessage + " Error: " + errorMessage); 
+                    }
+                })
+                .finally(() => {
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Login';
+                });
+        }
+
+        // New function to handle forgot password
+        function handleForgotPassword(e) {
+            e.preventDefault(); // Prevent default link behavior (e.g., scrolling to top)
+
+            const email = prompt("Please enter your email address to reset your password:");
+
+            if (email) {
+                // Validate email format (optional but good practice)
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    alert("Please enter a valid email address.");
+                    return;
+                }
+
+                auth.sendPasswordResetEmail(email)
+                    .then(() => {
+                        alert("Password reset email sent successfully! Please check your inbox (and spam folder).");
+                    })
+                    .catch((error) => {
+                        const errorCode = error.code;
+                        const errorMessage = error.message;
+                        console.error("Forgot password failed:", errorCode, errorMessage);
+
+                        let displayErrorMessage = "Failed to send password reset email. Please try again.";
+
+                        if (errorCode === 'auth/user-not-found') {
+                            displayErrorMessage = "No user found with that email address.";
+                        } else if (errorCode === 'auth/invalid-email') {
+                            displayErrorMessage = "The email address is not valid.";
+                        }
+                        
+                        alert(displayErrorMessage);
+                    });
+            } else if (email === "") {
+                alert("Email address cannot be empty.");
+            }
+            // If email is null (user clicked cancel on prompt), do nothing.
+        }
+    </script>
+</body>
+</html>

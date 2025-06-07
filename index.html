@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindSync - Notes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Updated Color Palette - Blue-Green with more blue */
+            --primary: #1E88E5;  /* Changed from orange to a vibrant blue */
+            --primary-light: #42A5F5;  /* Lighter blue */
+            --primary-dark: #1565C0;  /* Darker blue */
+            --secondary: #00ACC1;  /* Teal/blue-green */
+            --success: #4CAF50;
+            --danger: #F44336;
+            --warning: #FFC107;
+            --info: #2196F3;
+            
+            /* Neutral Colors */
+            --white: #FFFFFF;
+            --gray-50: #FAFAFA;
+            --gray-100: #F5F5F5;
+            --gray-200: #EEEEEE;
+            --gray-300: #E0E0E0;
+            --gray-400: #BDBDBD;
+            --gray-500: #9E9E9E;
+            --gray-600: #757575;
+            --gray-700: #616161;
+            --gray-800: #424242;
+            --gray-900: #212121;
+            
+            /* Shadows */
+            --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+            --shadow-xl: 0 20px 25px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.04);
+            
+            /* Border Radius */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-full: 9999px;
+            
+            /* Transitions */
+            --transition-fast: all 0.15s ease;
+            --transition-normal: all 0.3s ease;
+            --transition-slow: all 0.5s ease;
+            
+            /* Spacing */
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --space-2xl: 48px;
+        }
+
+        /* All other CSS remains exactly the same */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-900);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+            padding-bottom: 80px;
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+            line-height: 1.25;
+            margin-bottom: var(--space-sm);
+        }
+
+        p {
+            margin-bottom: var(--space-md);
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+
+        a:hover {
+            color: var(--primary-dark);
+        }
+
+        /* Utility Classes */
+        .text-primary {
+            color: var(--primary);
+        }
+
+        .text-muted {
+            color: var(--gray-600);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Layout Components */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-md) var(--space-lg);
+            background-color: var(--white);
+            box-shadow: var(--shadow-sm);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .logo-img {
+            height: 32px;
+            width: auto;
+            border-radius: var(--radius-sm);
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        /* Improved Account Button */
+        .account-btn-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            cursor: pointer;
+            padding: var(--space-xs);
+            border-radius: var(--radius-md);
+            transition: var(--transition-fast);
+        }
+
+        .account-btn-wrapper:hover {
+            background-color: var(--gray-100);
+        }
+
+        .account-btn {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: var(--radius-full);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--white);
+            cursor: pointer;
+            transition: var(--transition-normal);
+            box-shadow: var(--shadow-sm);
+            font-size: 18px;
+            border: none;
+            outline: none;
+        }
+
+        .account-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .account-btn:active {
+            transform: translateY(0);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Remove account text and arrow */
+        .account-btn-text,
+        .account-btn-wrapper .fa-chevron-down {
+            display: none !important;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: var(--space-lg) 0;
+            transition: var(--transition-normal);
+        }
+
+        .main-content.expanded {
+            margin-right: 300px;
+        }
+
+        /* Search Bar */
+        .search-container {
+            display: flex;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+            position: relative;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: var(--space-md) var(--space-lg);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-full);
+            font-size: 16px;
+            outline: none;
+            transition: var(--transition-normal);
+            background-color: var(--white);
+            box-shadow: var(--shadow-xs);
+            font-family: inherit;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.15); /* Updated to match new primary color */
+        }
+
+        .search-input::placeholder {
+            color: var(--gray-500);
+        }
+
+        /* Notes Grid */
+        .notes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--space-md);
+        }
+
+        /* Note Card */
+        .note-item {
+            background-color: var(--white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: var(--transition-normal);
+            border: 1px solid var(--gray-200);
+            border-left: 6px solid var(--primary);
+            position: relative;
+            padding-left: 12px;
+        }
+
+        .note-item:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .note-item .note-icon {
+            position: absolute;
+            left: 12px;
+            top: 18px;
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-md);
+            cursor: pointer;
+            background-color: var(--white);
+            border-bottom: 1px solid var(--gray-100);
+            transition: var(--transition-fast);
+        }
+
+        .note-header:hover {
+            background-color: var(--gray-50);
+        }
+
+        .note-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin: 0;
+            font-size: 16px;
+            flex-grow: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-right: var(--space-sm);
+        }
+
+        .note-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .note-action-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-full);
+            background-color: transparent;
+            border: none;
+            color: var(--gray-600);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .note-action-btn:hover {
+            background-color: var(--gray-100);
+            color: var(--primary);
+        }
+
+        .note-content {
+            padding: var(--space-md);
+            color: var(--gray-700);
+            font-size: 14px;
+            line-height: 1.7;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-height: 120px;
+            display: -webkit-box;
+            -webkit-line-clamp: 5; /* Limit to 5 lines */
+            line-clamp: 5; /* Standard property for compatibility */
+            -webkit-box-orient: vertical;
+            white-space: normal; /* <-- Change from pre-wrap to normal */
+        }
+
+        .note-date {
+            padding: 0 var(--space-md) var(--space-md);
+            font-size: 12px;
+            color: var(--gray-500);
+            text-align: right;
+        }
+        
+        .note-timestamps {
+            padding: 0 var(--space-md) var(--space-md);
+            font-size: 11px;
+            color: var(--gray-500);
+            text-align: right;
+            border-top: 1px solid var(--gray-100);
+            padding-top: var(--space-xs);
+            margin-top: var(--space-xs);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        .note-timestamps span {
+            display: block;
+        }
+
+        /* Empty States */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: var(--space-2xl) var(--space-md);
+            grid-column: 1 / -1;
+            background-color: var(--white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: var(--gray-400);
+            margin-bottom: var(--space-md);
+        }
+
+        .empty-state h3 {
+            color: var(--gray-700);
+            margin-bottom: var(--space-sm);
+        }
+
+        .empty-state p {
+            color: var(--gray-600);
+            max-width: 400px;
+            margin: 0 auto var(--space-md);
+        }
+
+        /* Hide the floating add note button if no notes (handled by JS) */
+        .fab.hide {
+            display: none !important;
+        }
+
+        /* Remove add note button from empty state */
+        .empty-state .btn {
+            display: none !important;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 100px;
+            right: var(--space-lg);
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: var(--white);
+            border-radius: var(--radius-full);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            z-index: 50;
+            transition: var(--transition-normal);
+            border: none;
+            outline: none;
+        }
+
+        .fab:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: var(--shadow-xl);
+        }
+
+        /* Note Form Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition-normal);
+        }
+
+        .modal.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            width: 100%;
+            max-width: 700px; /* Adjusted for notepad size */
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: var(--space-md);
+            padding-bottom: 8px; /* For the save button at the bottom of notepad */
+        }
+
+        .modal-header {
+            padding: var(--space-md);
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--gray-500);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .modal-close:hover {
+            color: var(--gray-700);
+        }
+
+        /* Styles for the new notepad container (Moved from JavaScript response for completeness) */
+        .notepad-container {
+            padding: var(--space-md);
+            /* This div is now directly inside modal-content, so it takes its sizing */
+        }
+
+        .notepad-container .toolbar {
+            display: flex;
+            flex-wrap: wrap; /* Allow buttons to wrap */
+            gap: var(--space-xs);
+            margin-bottom: var(--space-md);
+            border-bottom: 1px solid var(--gray-200);
+            padding-bottom: var(--space-sm);
+        }
+
+        .notepad-container .tool-button {
+            background-color: var(--gray-100);
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            padding: var(--space-xs) var(--space-sm);
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .notepad-container .tool-button:hover {
+            background-color: var(--gray-200);
+            border-color: var(--primary);
+            color: var(--primary-dark);
+        }
+
+        .notepad-container .title-input {
+            width: 100%;
+            padding: var(--space-sm);
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+            font-family: inherit;
+            outline: none;
+            transition: var(--transition-fast);
+        }
+
+        .notepad-container .title-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+        }
+
+        .notepad-container .content-area {
+            min-height: 200px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            padding: var(--space-md);
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: var(--space-md);
+            outline: none;
+            overflow-y: auto;
+            white-space: pre-wrap; /* Maintains formatting like line breaks */
+            transition: var(--transition-fast);
+        }
+
+        .notepad-container .content-area:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+        }
+
+        .notepad-container .content-area:empty:before {
+            content: attr(placeholder);
+            color: var(--gray-500);
+        }
+
+        .notepad-container .image-upload {
+            border: 2px dashed var(--gray-300);
+            border-radius: var(--radius-sm);
+            padding: var(--space-md);
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: var(--space-md);
+            transition: var(--transition-fast);
+            color: var(--gray-600);
+        }
+
+        .notepad-container .image-upload:hover {
+            border-color: var(--primary);
+            background-color: var(--gray-50);
+            color: var(--primary-dark);
+        }
+
+        .notepad-container .image-upload p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .notepad-container .save-button {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: var(--space-sm) var(--space-md);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            float: right; /* Align to the right */
+            transition: var(--transition-normal);
+            margin-right: var(--space-md); /* Add margin to align with modal padding */
+        }
+
+        .notepad-container .save-button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(10px);
+            padding: 10px 0 6px 0;
+            box-shadow: 0 -4px 24px rgba(30,136,229,0.10), 0 -1.5px 6px rgba(0,0,0,0.04);
+            z-index: 90;
+            border-top-left-radius: var(--radius-lg);
+            border-top-right-radius: var(--radius-lg);
+            transition: background 0.2s;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--gray-600);
+            cursor: pointer;
+            padding: 8px 0 4px 0;
+            border-radius: var(--radius-md);
+            transition: color 0.18s, background 0.18s;
+            flex: 1;
+            max-width: 120px;
+            text-decoration: none;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .nav-item i {
+            font-size: 24px;
+            margin-bottom: 2px;
+            transition: color 0.18s, transform 0.18s;
+        }
+
+        .nav-item span {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            transition: color 0.18s;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: rgba(30, 136, 229, 0.08);
+        }
+
+        .nav-item.active i,
+        .nav-item.active span {
+            color: var(--primary);
+        }
+
+        .nav-item.active::after {
+            content: '';
+            display: block;
+            position: absolute;
+            left: 50%;
+            bottom: 2px;
+            transform: translateX(-50%);
+            width: 32px;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--primary);
+            opacity: 0.18;
+        }
+
+        .nav-item:hover:not(.active) {
+            color: var(--primary-light);
+            background: rgba(66, 165, 245, 0.07);
+        }
+
+        .nav-item:active {
+            background: rgba(30,136,229,0.13);
+            color: var(--primary-dark);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 300px;
+            height: 100vh;
+            background-color: var(--white);
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            z-index: 110;
+            transition: var(--transition-normal);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar.open {
+            right: 0;
+        }
+
+        .sidebar-header {
+            padding: var(--space-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin: 0;
+        }
+
+        .sidebar-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--gray-500);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .sidebar-close:hover {
+            color: var(--gray-700);
+            transform: rotate(90deg);
+        }
+
+        .sidebar-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--space-md) 0;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: var(--space-sm) var(--space-md);
+            color: var(--gray-800);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            text-decoration: none;
+        }
+
+        .sidebar-item i {
+            width: 24px;
+            text-align: center;
+            margin-right: var(--space-sm);
+            color: var(--gray-600);
+            transition: var(--transition-fast);
+        }
+
+        .sidebar-item:hover {
+            background-color: var(--gray-50);
+            color: var(--primary);
+        }
+
+        .sidebar-item:hover i {
+            color: var(--primary);
+        }
+
+        .sidebar-footer {
+            padding: var(--space-md);
+            border-top: 1px solid var(--gray-200);
+        }
+
+        /* Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition-normal);
+        }
+
+        .overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Alert Styles */
+        .alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            background: #fffbe6;
+            color: #b26a00;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #ffe58f;
+        }
+
+        .alert.success { 
+            background: #e6fffb; 
+            color: #08979c; 
+            border-color: #87e8de; 
+        }
+
+        .alert.error { 
+            background: #fff1f0; 
+            color: #cf1322; 
+            border-color: #ffa39e; 
+        }
+
+        .error-message {
+            color: var(--danger);
+            text-align: center;
+            padding: var(--space-lg);
+        }
+
+        /* Loader Styles */
+        #loader {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(255,255,255,0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #loader .spinner {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .notes-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                padding: var(--space-sm) var(--space-md);
+            }
+            
+            .logo-text {
+                font-size: 18px;
+            }
+            
+            .account-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+            
+            .fab {
+                bottom: 90px;
+                right: var(--space-md);
+                width: 50px;
+                height: 50px;
+                font-size: 22px;
+            }
+            
+            .modal-content {
+                margin: var(--space-sm);
+            }
+            
+            .sidebar {
+                width: 280px;
+            }
+
+            .main-content.expanded {
+                margin-right: 0;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .account-btn-text {
+                display: block;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .search-input {
+                padding: var(--space-sm) var(--space-md);
+            }
+
+            .notepad-container .save-button {
+                margin-right: 8px; /* Adjust margin for small screens */
+            }
+
+            .note-item {
+                font-size: 13px;
+                padding-left: 6px;
+            }
+            
+            .bottom-nav {
+                padding: var(--space-xs) 0;
+            }
+            
+            .nav-item i {
+                font-size: 18px;
+            }
+            
+            .nav-item span {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="overlay"></div>
+    <div id="loader" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);z-index:2000;justify-content:center;align-items:center;">
+        <div style="font-size:2rem;color:var(--primary);"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+    </div>
+
+    <header class="header">
+        <div class="logo-container">
+            <img src="MS.png" alt="MindSync Logo" class="logo-img">
+            <div class="logo-text">MindSync</div>
+        </div>
+        <div class="account-btn-wrapper" id="accountBtnWrapper">
+            <button class="account-btn" id="accountBtn" title="Account Options">
+                <i class="fas fa-user"></i>
+            </button>
+            </div>
+    </header>
+
+    <main class="main-content" id="mainContent">
+        <div class="container">
+            <div class="search-container">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search notes...">
+            </div>
+
+            <div class="empty-state hidden" id="noResults">
+                <i class="fas fa-search"></i>
+                <h3>No notes found</h3>
+                <p>Try a different search term or create a new note.</p>
+            </div>
+
+            <div class="notes-container" id="notesContainer">
+                <div class="empty-state" id="emptyNotes">
+                    <i class="fas fa-sticky-note"></i>
+                    <h3>No notes yet</h3>
+                    <p>Get started by creating your first note!</p>
+                    </div>
+            </div>
+        </div>
+    </main>
+
+    <button class="fab" id="addNoteBtn" title="Add New Note">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <div class="modal" id="noteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Add New Note</h3>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="notepad-container">
+                <div class="toolbar">
+                    <button class="tool-button" onclick="formatText('bold')" title="Bold"><b>B</b></button>
+                    <button class="tool-button" onclick="formatText('italic')" title="Italic"><i>I</i></button>
+                    <button class="tool-button" onclick="formatText('underline')" title="Underline"><u>U</u></button>
+                    <button class="tool-button" onclick="formatText('insertUnorderedList')" title="Bullet List"><i class="fas fa-list-ul"></i></button>
+                    <button class="tool-button" onclick="insertImage()" title="Insert Image">🖼️</button>
+                    <button class="tool-button" onclick="cleanParagraphs(false)" title="Clean Paragraphs (Keep Basic Formatting)">✨</button>
+                    <button class="tool-button" onclick="cleanParagraphs(true)" title="Clean Paragraphs (Plain Text)">📄</button>
+                    <button class="tool-button" id="speechToTextBtn" title="Speech to Text">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                </div>
+                
+                <input type="text" class="title-input" id="notepadTitle" placeholder="Untitled Document">
+                
+                <div 
+                    id="editor" 
+                    class="content-area" 
+                    contenteditable="true" 
+                    placeholder="Start typing..."
+                ></div>
+                
+                <div class="image-upload" onclick="document.getElementById('file-input').click()">
+                    <p>Click to add an image or drag and drop</p>
+                    <input type="file" id="file-input" style="display: none;" accept="image/*">
+                </div>
+                
+                <button class="save-button" id="notepadSaveButton">Save</button>
+                <div style="clear: both;"></div> </div>
+            </div>
+    </div>
+
+    <div class="modal" id="quizModal" style="display:none;">
+        <div class="modal-content" id="quizModalContent"></div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="homepage.html" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="quiz.html" class="nav-item">
+            <i class="fas fa-question-circle"></i>
+            <span>Quiz</span>
+        </a>
+        </nav>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3 class="sidebar-title">Menu</h3>
+            <button class="sidebar-close" id="sidebarClose">&times;</button>
+        </div>
+        <div class="sidebar-body">
+            <a href="account.html" class="sidebar-item">
+                <i class="fas fa-user"></i>
+                <span>Account</span>
+            </a>
+            <a href="settings.html" class="sidebar-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+            <a href="about.html" class="sidebar-item">
+                <i class="fas fa-info-circle"></i>
+                <span>About</span>
+            </a>
+        </div>
+        <div class="sidebar-footer">
+            <button class="btn btn-danger" id="logoutBtn" style="width: 100%;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </div>
+
+    <div id="voiceStatus" style="display:none; color: #1E88E5; margin-top: 8px;"></div> <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBU84r_RKYDoUinlBntyFYJAPWvvQD0xZQ",
+            authDomain: "appblocker-cee93.firebaseapp.com",
+            databaseURL: "https://appblocker-cee93-default-rtdb.firebaseio.com",
+            projectId: "appblocker-cee93",
+            storageBucket: "appblocker-cee93.appspot.com",
+            messagingSenderId: "388944003396",
+            appId: "1:388944003396:web:4e8cac1df4f6d68f5e5711",
+            measurementId: "G-TGSK8PV5FF"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const auth = firebase.auth();
+
+        let currentUser = null;
+        let notes = [];
+        let editingNoteId = null; // To keep track of which note is being edited
+
+        // DOM Elements
+        const accountBtnWrapper = document.getElementById('accountBtnWrapper');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarClose = document.getElementById('sidebarClose');
+        const overlay = document.getElementById('overlay');
+        const mainContent = document.getElementById('mainContent');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const addNoteBtn = document.getElementById('addNoteBtn');
+        const noteModal = document.getElementById('noteModal');
+        const modalClose = document.getElementById('modalClose');
+        const modalTitle = document.getElementById('modalTitle'); // "Add New Note" or "Edit Note"
+        const notesContainer = document.getElementById('notesContainer');
+        const emptyNotesState = document.getElementById('emptyNotes');
+        const searchInput = document.getElementById('searchInput');
+        const noResultsState = document.getElementById('noResults');
+        const voiceSearchBtn = document.getElementById('voiceSearchBtn');
+        const voiceStatus = document.getElementById('voiceStatus');
+        const loader = document.getElementById('loader');
+
+        // New Notepad Elements
+        const notepadTitleInput = document.getElementById('notepadTitle');
+        const editor = document.getElementById('editor');
+        const fileInput = document.getElementById('file-input');
+        const notepadSaveButton = document.getElementById('notepadSaveButton');
+        const speechToTextBtn = document.getElementById('speechToTextBtn');
+
+        let noteRecognition;
+        if ('webkitSpeechRecognition' in window) {
+            noteRecognition = new webkitSpeechRecognition();
+            noteRecognition.continuous = false;
+            noteRecognition.interimResults = false;
+            noteRecognition.lang = 'en-US';
+
+            noteRecognition.onstart = function() {
+                speechToTextBtn.classList.add('active');
+                showAlert('Listening... Speak now.', 'info');
+            };
+
+            noteRecognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                // Insert at cursor position in the editor
+                insertAtCursor(editor, transcript);
+            };
+
+            noteRecognition.onerror = function(event) {
+                showAlert(`Speech recognition error: ${event.error}`, 'error');
+            };
+
+            noteRecognition.onend = function() {
+                speechToTextBtn.classList.remove('active');
+            };
+        } else {
+            if (speechToTextBtn) speechToTextBtn.style.display = 'none';
+        }
+
+        if (speechToTextBtn) {
+            speechToTextBtn.addEventListener('click', () => {
+                if (noteRecognition) {
+                    noteRecognition.start();
+                } else {
+                    showAlert('Speech recognition is not supported in your browser.', 'info');
+                }
+            });
+        }
+
+        // Helper function to insert text at cursor in contenteditable
+        function insertAtCursor(editableDiv, text) {
+            let sel, range;
+            if (window.getSelection) {
+                sel = window.getSelection();
+                if (sel.getRangeAt && sel.rangeCount) {
+                    range = sel.getRangeAt(0);
+                    range.deleteContents();
+                    range.insertNode(document.createTextNode(text));
+                    // Move the cursor after the inserted text
+                    range.collapse(false);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
+            }
+            editableDiv.focus();
+        }
+
+        // --- Utility Functions ---
+        function showAlert(message, type = 'info') {
+            const alertBox = document.createElement('div');
+            alertBox.className = `alert ${type}`;
+            alertBox.textContent = message;
+            document.body.appendChild(alertBox);
+
+            setTimeout(() => {
+                alertBox.remove();
+            }, 3000);
+        }
+
+        function showLoader() {
+            loader.style.display = 'flex';
+        }
+
+        function hideLoader() {
+            loader.style.display = 'none';
+        }
+
+        // --- Firebase Authentication ---
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                loadNotes();
+            } else {
+                currentUser = null;
+                window.location.href = 'login.html'; // Redirect to login if not authenticated
+            }
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            auth.signOut().then(() => {
+                showAlert('Logged out successfully!', 'success');
+                // Redirection handled by onAuthStateChanged
+            }).catch(error => {
+                console.error("Logout Error:", error);
+                showAlert(`Logout failed: ${error.message}`, 'error');
+            });
+        });
+
+        // --- Sidebar Toggling ---
+        accountBtnWrapper.addEventListener('click', () => {
+            sidebar.classList.add('open');
+            overlay.classList.add('active');
+            mainContent.classList.add('expanded');
+        });
+
+        sidebarClose.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            mainContent.classList.remove('expanded');
+        });
+
+        overlay.addEventListener('click', () => {
+            if (sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+                mainContent.classList.remove('expanded');
+            }
+            if (noteModal.classList.contains('show')) {
+                hideModal(noteModal);
+            }
+        });
+
+        // --- Modal Functions ---
+        function showModal(modalElement) {
+            modalElement.classList.add('show');
+            overlay.classList.add('active');
+        }
+
+        function hideModal(modalElement) {
+            modalElement.classList.remove('show');
+            overlay.classList.remove('active');
+            
+            // Clear the notepad when modal is closed
+            notepadTitleInput.value = '';
+            editor.innerHTML = '';
+            editingNoteId = null; // Reset editing state
+            editor.setAttribute('placeholder', 'Start typing...'); // Reset placeholder
+        }
+
+        // --- Add Note Button ---
+        addNoteBtn.addEventListener('click', () => {
+            modalTitle.textContent = 'Add New Note';
+            showModal(noteModal);
+        });
+
+        modalClose.addEventListener('click', () => {
+            hideModal(noteModal);
+        });
+
+        // --- Notepad Toolbar Functions (New) ---
+        function formatText(command, value = null) {
+            document.execCommand(command, false, value);
+            editor.focus(); // Keep focus on the editor after formatting
+        }
+
+        function insertImage() {
+            fileInput.click(); // Trigger the hidden file input
+        }
+
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = `<img src="${e.target.result}" style="max-width:100%; height:auto; display:block; margin: 10px 0;">`;
+                    editor.focus();
+                    document.execCommand('insertHTML', false, img);
+                    fileInput.value = ''; // Clear the file input after use
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // --- Paragraph Format Fixer (New Function) ---
+        function cleanParagraphs(stripAllHtml = false) { 
+            const editor = document.getElementById('editor');
+            if (!editor) return;
+
+            let htmlContent = editor.innerHTML;
+
+            // --- Phase 1: Normalize Line Breaks and Convert to <p> tags ---
+            htmlContent = htmlContent.replace(/<br\s*\/?>/gi, '__TEMP_BR__');
+            htmlContent = htmlContent.replace(/(__TEMP_BR__){2,}/g, '</p><p>');
+            htmlContent = htmlContent.replace(/__TEMP_BR__/g, ' ');
+
+            // --- Phase 2: Clean up existing <p> tags and surrounding whitespace ---
+            htmlContent = htmlContent.replace(/<p>\s*(&nbsp;)?\s*<\/p>/gi, '');
+            if (!htmlContent.startsWith('<p>') && htmlContent.trim() !== '') {
+                htmlContent = '<p>' + htmlContent.trim();
+            }
+            if (!htmlContent.endsWith('</p>') && htmlContent.trim() !== '') {
+                htmlContent = htmlContent.trim() + '</p>';
+            }
+            htmlContent = htmlContent.replace(/(<\/p>\s*<p>)+/gi, '</p><p>');
+
+            // --- Phase 3: Strip unwanted HTML (Conditional) ---
+            if (stripAllHtml) {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = htmlContent;
+                let plainText = tempDiv.innerText;
+                plainText = plainText.split(/\n\s*\n+/).map(p => {
+                    p = p.trim();
+                    p = p.replace(/\n/g, ' ');
+                    return p ? `<p>${p}</p>` : '';
+                }).filter(Boolean).join('');
+                htmlContent = plainText;
+            } else {
+                // Remove inline styles
+                htmlContent = htmlContent.replace(/<(\w+)([^>]*)style="[^"]*"([^>]*)>/gi, '<$1$2$3>');
+                // Remove empty <span> tags
+                htmlContent = htmlContent.replace(/<span[^>]*>\s*<\/span>/gi, '');
+                // Remove <font> tags
+                htmlContent = htmlContent.replace(/<font[^>]*>(.*?)<\/font>/gi, '$1');
+            }
+
+            // --- Phase 4: Final Cleanup ---
+            htmlContent = htmlContent.replace(/\s{2,}/g, ' ');
+            htmlContent = htmlContent.trim();
+
+            editor.innerHTML = htmlContent;
+        }
+
+        // --- Save Note Function (Updated for new notepad) ---
+        notepadSaveButton.addEventListener('click', () => {
+            const title = notepadTitleInput.value.trim();
+            const content = editor.innerHTML.trim(); // Get HTML content
+
+            if (!title) {
+                showAlert('Note title cannot be empty.', 'error');
+                return;
+            }
+
+            showLoader();
+
+            // Initialize timestamps
+            let creationTimestamp = firebase.database.ServerValue.TIMESTAMP;
+            let lastUpdatedTimestamp = firebase.database.ServerValue.TIMESTAMP;
+
+            if (editingNoteId) {
+                // If editing, retrieve existing creation timestamp
+                database.ref(`users/${currentUser.uid}/notes/${editingNoteId}`).once('value', (snapshot) => {
+                    const existingNote = snapshot.val();
+                    if (existingNote && existingNote.timestamp) { // Assuming 'timestamp' is creation time
+                        creationTimestamp = existingNote.timestamp;
+                    }
+                    // Update note with new content and updated timestamp
+                    const noteData = {
+                        title: title,
+                        content: content, // Save as HTML
+                        timestamp: creationTimestamp, // Keep original creation time
+                        lastUpdated: lastUpdatedTimestamp // Update last updated time
+                    };
+                    database.ref(`users/${currentUser.uid}/notes/${editingNoteId}`).update(noteData)
+                        .then(() => {
+                            showAlert('Note updated successfully!', 'success');
+                            hideModal(noteModal);
+                            loadNotes();
+                        })
+                        .catch(error => {
+                            console.error("Error updating note:", error);
+                            showAlert(`Failed to update note: ${error.message}`, 'error');
+                        })
+                        .finally(() => hideLoader());
+                });
+            } else {
+                // Add new note with both creation and updated timestamps
+                const noteData = {
+                    title: title,
+                    content: content,
+                    timestamp: creationTimestamp, // Creation time
+                    lastUpdated: lastUpdatedTimestamp // Initially same as creation time
+                };
+                database.ref(`users/${currentUser.uid}/notes`).push(noteData)
+                    .then(() => {
+                        showAlert('Note added successfully!', 'success');
+                        hideModal(noteModal);
+                        loadNotes();
+                    })
+                    .catch(error => {
+                        console.error("Error adding note:", error);
+                        showAlert(`Failed to add note: ${error.message}`, 'error');
+                    })
+                    .finally(() => hideLoader());
+            }
+        });
+
+
+        // --- Load Notes Function (Updated for new notepad) ---
+        function loadNotes() {
+            if (!currentUser) {
+                notesContainer.innerHTML = ''; // Clear notes if no user
+                emptyNotesState.classList.remove('hidden'); // Show empty state for no user
+                addNoteBtn.classList.remove('hide'); // Allow user to try adding note if they are logged in or not
+                return;
+            }
+
+            showLoader();
+            const userNotesRef = database.ref(`users/${currentUser.uid}/notes`);
+
+            userNotesRef.orderByChild('timestamp').on('value', (snapshot) => {
+                notes = [];
+                snapshot.forEach(childSnapshot => {
+                    const note = childSnapshot.val();
+                    note.id = childSnapshot.key;
+                    notes.unshift(note); // Add to the beginning to show newest first
+                });
+
+                displayNotes(notes);
+                hideLoader();
+            }, (error) => {
+                console.error("Error loading notes:", error);
+                showAlert(`Failed to load notes: ${error.message}`, 'error');
+                hideLoader();
+                notesContainer.innerHTML = `<p class="error-message">Failed to load notes. Please try again.</p>`;
+            });
+        }
+
+        // --- Display Notes Function (No major changes here, but good to review) ---
+        function displayNotes(notesToDisplay) {
+            notesContainer.innerHTML = ''; // Clear previous notes
+
+            if (notesToDisplay.length === 0) {
+                emptyNotesState.classList.remove('hidden');
+                noResultsState.classList.add('hidden'); // Ensure no results is hidden if general empty
+                addNoteBtn.classList.remove('hide'); // Ensure FAB is visible to add first note
+            } else {
+                emptyNotesState.classList.add('hidden');
+                addNoteBtn.classList.remove('hide');
+                notesToDisplay.forEach(note => {
+                    const noteElement = document.createElement('div');
+                    noteElement.className = 'note-item';
+                    noteElement.setAttribute('data-id', note.id);
+
+                    // Truncate content for display but keep HTML integrity
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = note.content || '';
+                    let truncatedContent = tempDiv.textContent.substring(0, 150);
+                    if (tempDiv.textContent.length > 150) {
+                        truncatedContent += '...';
+                    }
+
+                    // Format timestamps for display
+                    const createdDate = note.timestamp ? new Date(note.timestamp).toLocaleString() : 'N/A';
+                    const updatedDate = note.lastUpdated ? new Date(note.lastUpdated).toLocaleString() : 'Never Updated';
+
+                    noteElement.innerHTML = `
+                        <div class="note-header">
+                            <h4 class="note-title">${note.title || 'Untitled Note'}</h4>
+                            <div class="note-actions">
+                                <button class="note-action-btn edit-note-btn" title="Edit Note"><i class="fas fa-edit"></i></button>
+                                <button class="note-action-btn delete-note-btn" title="Delete Note"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </div>
+                        <div class="note-content">${truncatedContent}</div>
+                        <div class="note-timestamps">
+                            <span>Created: ${createdDate}</span>
+                            <span>Updated: ${updatedDate}</span>
+                        </div>
+                    `;
+
+                    notesContainer.appendChild(noteElement);
+                });
+            }
+        }
+
+        // --- Edit Note Functionality (Updated for new notepad) ---
+        notesContainer.addEventListener('click', (event) => {
+            if (event.target.closest('.edit-note-btn')) {
+                const noteItem = event.target.closest('.note-item');
+                const noteId = noteItem.getAttribute('data-id');
+                const noteToEdit = notes.find(note => note.id === noteId);
+
+                if (noteToEdit) {
+                    editingNoteId = noteId;
+                    modalTitle.textContent = 'Edit Note';
+                    notepadTitleInput.value = noteToEdit.title || '';
+                    editor.innerHTML = noteToEdit.content || ''; // Load full HTML content
+                    showModal(noteModal);
+                    editor.focus(); // Focus on the editor when opened for editing
+                    // Hide placeholder if content is present
+                    if (editor.innerHTML.trim() !== '') {
+                        editor.removeAttribute('placeholder');
+                    } else {
+                        editor.setAttribute('placeholder', 'Start typing...');
+                    }
+                }
+            }
+        });
+
+        // --- Delete Note Functionality ---
+        notesContainer.addEventListener('click', (event) => {
+            if (event.target.closest('.delete-note-btn')) {
+                const noteItem = event.target.closest('.note-item');
+                const noteId = noteItem.getAttribute('data-id');
+
+                if (confirm('Are you sure you want to delete this note?')) {
+                    showLoader();
+                    database.ref(`users/${currentUser.uid}/notes/${noteId}`).remove()
+                        .then(() => {
+                            showAlert('Note deleted successfully!', 'success');
+                            loadNotes(); // Reload notes after deletion
+                        })
+                        .catch(error => {
+                            console.error("Error deleting note:", error);
+                            showAlert(`Failed to delete note: ${error.message}`, 'error');
+                        })
+                        .finally(() => hideLoader());
+                }
+            }
+        });
+
+        // --- Search Functionality ---
+        searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredNotes = notes.filter(note =>
+                (note.title && note.title.toLowerCase().includes(searchTerm)) ||
+                (note.content && note.content.toLowerCase().includes(searchTerm.replace(/<[^>]*>/g, ''))) // Search plain text content
+            );
+            displayNotes(filteredNotes);
+
+            if (searchTerm.length > 0 && filteredNotes.length === 0) {
+                noResultsState.classList.remove('hidden');
+                emptyNotesState.classList.add('hidden'); // Hide general empty state
+            } else {
+                noResultsState.classList.add('hidden');
+                if (notes.length === 0) { // Only show general empty state if no notes at all
+                    emptyNotesState.classList.remove('hidden');
+                }
+            }
+        });
+
+        // --- Voice Search (Web Speech API) ---
+        let recognition;
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = function() {
+                voiceStatus.textContent = 'Listening...';
+                voiceStatus.style.display = 'block';
+                voiceSearchBtn.classList.add('active');
+            };
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                searchInput.value = transcript;
+                searchInput.dispatchEvent(new Event('input')); // Trigger search
+                voiceStatus.textContent = '';
+                voiceStatus.style.display = 'none';
+            };
+
+            recognition.onerror = function(event) {
+                console.error("Voice recognition error:", event.error);
+                voiceStatus.textContent = `Error: ${event.error}`;
+                showAlert(`Voice search error: ${event.error}`, 'error');
+                voiceStatus.style.display = 'block';
+                setTimeout(() => voiceStatus.style.display = 'none', 3000);
+            };
+
+            recognition.onend = function() {
+                voiceSearchBtn.classList.remove('active');
+                if (voiceStatus.textContent === 'Listening...') { // Clear if no result or error
+                    voiceStatus.textContent = '';
+                    voiceStatus.style.display = 'none';
+                }
+            };
+        } else {
+            voiceSearchBtn.style.display = 'none'; // Hide button if API not supported
+            console.warn('Web Speech API not supported in this browser.');
+        }
+
+        voiceSearchBtn.addEventListener('click', () => {
+            if (recognition) {
+                recognition.start();
+            } else {
+                showAlert('Voice search is not supported in your browser.', 'info');
+            }
+        });
+
+        // Handle placeholder for contenteditable div
+        editor.addEventListener('input', function() {
+            if (this.textContent.trim() !== '' || this.innerHTML.trim() !== '') { // Also check innerHTML for rich content
+                this.removeAttribute('placeholder');
+            } else {
+                this.setAttribute('placeholder', 'Start typing...');
+            }
+        });
+
+        // Initial check for placeholder on load (e.g., if editing existing note)
+        editor.addEventListener('focus', function() {
+            if (this.textContent.trim() === this.getAttribute('placeholder')) {
+                this.textContent = '';
+            }
+        });
+        editor.addEventListener('blur', function() {
+            if (this.textContent.trim() === '' && this.innerHTML.trim() === '') { // Check both
+                this.setAttribute('placeholder', 'Start typing...');
+            }
+        });
+
+    </script>
+</body>
+</html>
